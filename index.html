@@ -2074,7 +2074,6 @@
 
         // Fonction de la camera pour la capture de photo du visiteur
         function startCamera() {
-            if (!requireAuth()) return;
             const video = document.getElementById('videoCapture');
             const startBtn = document.getElementById('startCameraBtn');
             const captureBtn = document.getElementById('capturePhotoBtn');
@@ -2154,7 +2153,6 @@
 
                 // Camera pour la cérémonie
                 function startCameraCer() {
-                    if (!requireAuth()) return;
                     const video = document.getElementById('videoCaptureCer');
                     const startBtn = document.getElementById('startCameraBtnCer');
                     const captureBtn = document.getElementById('capturePhotoBtnCer');
@@ -2667,7 +2665,6 @@
 
         // Telecharger le QR Code
         function downloadQR() {
-            if (!requireAuth()) return;
             if (!currentQRCode) return;
 
             const selector = (currentQRCode && currentQRCode.category === 'ceremonie') ? '#qrCodeCer' : '#qrCode';
@@ -2725,7 +2722,6 @@
 
         // Imprimer le QR Code
         function printQR() {
-            if (!requireAuth()) return;
             if (!currentQRCode) return;
             const isCer = currentQRCode && currentQRCode.category === 'ceremonie';
             const qrSelector = isCer ? '#qrCodeCer' : '#qrCode';
@@ -3080,7 +3076,6 @@
             function toggleVerifyScanner() {
                 const scanner = document.getElementById('verifyScanner');
                 if (!scanner) return;
-                if (!requireAuth()) return;
                 if (scanner.style.display === 'none' || scanner.style.display === '') {
                     startVerifyCamera();
                 } else {
