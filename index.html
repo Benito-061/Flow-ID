@@ -99,6 +99,76 @@
             50% { transform: scale(1.05); background-color: #ff6b6b; }
         }
 
+        /* Animations pour les examens */
+        @keyframes fadeInTag {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .exam-card:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+        }
+
+        .exam-card:hover .exam-icon {
+            transform: scale(1.2) !important;
+            transition: transform 0.3s ease !important;
+        }
+
+        .exam-card.selected {
+            transform: scale(0.98);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .exam-card.selected .exam-checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .exam-card.selected .exam-icon {
+            transform: scale(1.1);
+        }
+
+        /* Animations pour les urgences */
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+            }
+        }
+
+        .urgency-card:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+        }
+
+        .urgency-card:hover .urgency-icon {
+            transform: scale(1.2) !important;
+            transition: transform 0.3s ease !important;
+        }
+
+        .urgency-card.selected {
+            transform: scale(0.98);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .urgency-card.selected .urgency-checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .urgency-card.selected .urgency-icon {
+            transform: scale(1.1);
+        }
+
         /* Container principal */
         .container {
             max-width: 1400px;
@@ -209,13 +279,18 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--dark);
+            transform-origin: center;
         }
 
         .nav-tab:hover {
             background: var(--light);
             transform: translateY(-2px);
+        }
+
+        .nav-tab:active {
+            transform: translateY(0) scale(0.98);
         }
 
         /* Animated full-width style for nav tabs (hover effect) */
@@ -483,6 +558,25 @@
         .btn-small {
             padding: 10px 18px;
             font-size: 12px;
+        }
+
+        /* Styles fluides pour les éléments interactifs */
+        input, textarea, select {
+            transition: all 0.2s ease-out;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input:hover, textarea:hover, select:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Transitions fluides pour tous les éléments */
+        * {
+            -webkit-transition: background-color 0.2s ease, color 0.2s ease;
         }
 
         /* Conteneur du code QR */
@@ -758,14 +852,88 @@
             background-clip: text;
         }
 
+        /* Keyframes pour animations fluides */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
         /* Onglets */
         .tab-content {
             display: none;
+            animation: fadeOutTab 0.2s ease-out forwards;
         }
 
         .tab-content.active {
             display: block;
-            /* animation supprimée */
+            animation: fadeInTab 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeInTab {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOutTab {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+        }
+
+        .tab-content.exiting {
+            animation: fadeOut 0.2s ease-in forwards;
+        }
+
+        /* Transitions fluides pour les sections */
+        .hosp-section {
+            transition: opacity 0.3s ease-out;
+            opacity: 1;
+        }
+
+        .hosp-section[style*="display: none"] {
+            opacity: 0;
+        }
+
+        /* Transitions fluides pour les boutons de navigation */
+        .nav-tab {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            transform: scale(1);
         }
 
         /* Modale */
@@ -786,6 +954,16 @@
 
         .modal.active {
             display: flex;
+            animation: fadeInModal 0.3s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
@@ -797,7 +975,18 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-            /* animation supprimée */
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Remplacement en ligne `background: white` utilisations inserer via JS/modele */
@@ -1332,6 +1521,17 @@
                             </div>
                         </div>
 
+                        <!-- Scanner QR intégré -->
+                        <div id="qrScannerInline" style="display: none; margin-bottom: 15px; padding: 15px; border: 2px solid var(--primary); border-radius: 8px; background: var(--light);">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <video id="qrVideo" width="240" height="180" autoplay playsinline style="border-radius: 6px; border: 1px solid var(--border);"></video>
+                                <div style="flex: 1;">
+                                    <div id="qrStatus" style="font-weight: bold; margin-bottom: 10px;">Initialisation du scanner...</div>
+                                    <button type="button" class="btn btn-danger btn-small" onclick="stopQRScanner()">⏹️ Arrêter</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="cerName">Nom Complet *</label>
                             <input type="text" id="cerName" required placeholder="Nom qui s'affichera automatiquement">
@@ -1491,34 +1691,170 @@
                         <!-- Section 6: EXAMENS DEMANDÉS -->
                         <h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary);">🧪 6. EXAMENS DEMANDÉS</h3>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                    <input type="checkbox" id="cerLaboChecked" value="Laboratoire">
-                                    <span>🩸 Laboratoire</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                    <input type="checkbox" id="cerRadioChecked" value="Radiographie">
-                                    <span>📷 Radiographie</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                    <input type="checkbox" id="cerEchoChecked" value="Échographie">
-                                    <span>📡 Échographie</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                    <input type="checkbox" id="cerScannerChecked" value="Scanner">
-                                    <span>🔬 Scanner</span>
-                                </label>
-                                <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
-                                    <input type="checkbox" id="cerAutreExamChecked" value="Autre">
-                                    <span>⚙️ Autre</span>
-                                </label>
+                        <!-- Sélection des examens avec interface moderne -->
+                        <div class="exam-selection-container" style="margin-bottom: 20px;">
+                            <div class="exam-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                                <!-- Laboratoire -->
+                                <div class="exam-card" data-exam="labo" onclick="toggleExamSelection('labo')" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🩸</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #92400e; margin-bottom: 4px;">Laboratoire</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #a16207; opacity: 0.8;">Analyses sanguines, urinaires</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); border: 2px solid #f59e0b; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #f59e0b; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(245, 158, 11, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Radiographie -->
+                                <div class="exam-card" data-exam="radio" onclick="toggleExamSelection('radio')" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">📷</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #1e40af; margin-bottom: 4px;">Radiographie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #1d4ed8; opacity: 0.8;">RX, panoramique dentaire</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #3b82f6; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(59, 130, 246, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Échographie -->
+                                <div class="exam-card" data-exam="echo" onclick="toggleExamSelection('echo')" style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #10b981; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">📡</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #047857; margin-bottom: 4px;">Échographie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #059669; opacity: 0.8;">Abdominale, obstétricale</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid #10b981; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #10b981; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(16, 185, 129, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Scanner -->
+                                <div class="exam-card" data-exam="scanner" onclick="toggleExamSelection('scanner')" style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border: 2px solid #6366f1; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🔬</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #3730a3; margin-bottom: 4px;">Scanner</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #4338ca; opacity: 0.8;">CT, IRM, PET-Scan</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(99, 102, 241, 0.2); border: 2px solid #6366f1; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #6366f1; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(99, 102, 241, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- ECG -->
+                                <div class="exam-card" data-exam="ecg" onclick="toggleExamSelection('ecg')" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border: 2px solid #ec4899; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">❤️</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #be185d; margin-bottom: 4px;">ECG</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #db2777; opacity: 0.8;">Électrocardiogramme</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(236, 72, 153, 0.2); border: 2px solid #ec4899; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #ec4899; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(236, 72, 153, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Endoscopie -->
+                                <div class="exam-card" data-exam="endoscopie" onclick="toggleExamSelection('endoscopie')" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: 2px solid #059669; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🔍</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #065f46; margin-bottom: 4px;">Endoscopie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #047857; opacity: 0.8;">Gastroscopie, coloscopie</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(5, 150, 105, 0.2); border: 2px solid #059669; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #059669; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(5, 150, 105, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Biopsie -->
+                                <div class="exam-card" data-exam="biopsie" onclick="toggleExamSelection('biopsie')" style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: 2px solid #8b5cf6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🧬</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #6d28d9; margin-bottom: 4px;">Biopsie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #7c3aed; opacity: 0.8;">Prélèvement tissulaire</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(139, 92, 246, 0.2); border: 2px solid #8b5cf6; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #8b5cf6; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(139, 92, 246, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Mammographie -->
+                                <div class="exam-card" data-exam="mammographie" onclick="toggleExamSelection('mammographie')" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border: 2px solid #db2777; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">👩</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #be185d; margin-bottom: 4px;">Mammographie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #db2777; opacity: 0.8;">Dépistage sein</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(219, 39, 119, 0.2); border: 2px solid #db2777; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #db2777; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(219, 39, 119, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- IRM -->
+                                <div class="exam-card" data-exam="irm" onclick="toggleExamSelection('irm')" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #2563eb; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🧲</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #1e40af; margin-bottom: 4px;">IRM</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #1d4ed8; opacity: 0.8;">Imagerie par résonance</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(37, 99, 235, 0.2); border: 2px solid #2563eb; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #2563eb; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(37, 99, 235, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Echocardiographie -->
+                                <div class="exam-card" data-exam="echocardiographie" onclick="toggleExamSelection('echocardiographie')" style="background: linear-gradient(135deg, #ccfbf1 0%, #a7f3d0 100%); border: 2px solid #0d9488; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">💚</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #0f766e; margin-bottom: 4px;">Échocardiographie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #115e59; opacity: 0.8;">Cœur, valves</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(13, 148, 136, 0.2); border: 2px solid #0d9488; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #0d9488; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(13, 148, 136, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Coloscopie -->
+                                <div class="exam-card" data-exam="coloscopie" onclick="toggleExamSelection('coloscopie')" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #d97706; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">🫄</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #92400e; margin-bottom: 4px;">Coloscopie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #a16207; opacity: 0.8;">Colon, rectum</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(217, 119, 6, 0.2); border: 2px solid #d97706; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #d97706; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(217, 119, 6, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Fibroscopie -->
+                                <div class="exam-card" data-exam="fibroscopie" onclick="toggleExamSelection('fibroscopie')" style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #ea580c; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">👃</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #9a3412; margin-bottom: 4px;">Fibroscopie</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #c2410c; opacity: 0.8;">Voies respiratoires</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(234, 88, 12, 0.2); border: 2px solid #ea580c; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #ea580c; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(234, 88, 12, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Autre -->
+                                <div class="exam-card" data-exam="autre" onclick="toggleExamSelection('autre')" style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border: 2px solid #6b7280; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="exam-icon" style="font-size: 24px; margin-bottom: 8px; transition: transform 0.3s ease;">⚙️</div>
+                                    <div class="exam-title" style="font-weight: 600; color: #374151; margin-bottom: 4px;">Autre</div>
+                                    <div class="exam-desc" style="font-size: 12px; color: #4b5563; opacity: 0.8;">Examens spécialisés</div>
+                                    <div class="exam-checkmark" style="position: absolute; top: 12px; right: 12px; width: 20px; height: 20px; border-radius: 50%; background: rgba(107, 114, 128, 0.2); border: 2px solid #6b7280; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #6b7280; font-size: 12px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="exam-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(107, 114, 128, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Examens sélectionnés - Tags dynamiques -->
+                            <div id="selectedExamsContainer" style="display: none; margin-top: 15px;">
+                                <div style="font-weight: 600; color: var(--dark); margin-bottom: 10px; font-size: 14px;">📋 Examens sélectionnés :</div>
+                                <div id="selectedExamsTags" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="cerPrecisionExamens">Précision des Examens</label>
-                            <textarea id="cerPrecisionExamens" placeholder="Détails spécifiques des examens demandés..."></textarea>
+                        <!-- Zone de précision dynamique -->
+                        <div id="examDetailsContainer" style="display: none; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 15px; transition: all 0.3s ease;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <span style="font-size: 20px;">📝</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--dark);">Précisions des examens</div>
+                                    <div style="font-size: 12px; color: #64748b;">Détaillez les examens demandés pour une meilleure prise en charge</div>
+                                </div>
+                            </div>
+                            <textarea id="cerPrecisionExamens" placeholder="Ex: NFS, bilan hépatique complet, échographie abdominale avec doppler, radio de thorax face + profil..." style="width: 100%; min-height: 80px; border: 2px solid #cbd5e1; border-radius: 8px; padding: 12px; font-family: inherit; resize: vertical; transition: border-color 0.3s ease; background: white;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'"></textarea>
                         </div>
 
                         <hr style="border: none; border-top: 2px solid #e5e7eb; margin: 30px 0;">
@@ -1594,53 +1930,120 @@
                         <!-- Section 7: RECOMMANDATION D'HOSPITALISATION -->
                         <h3 style="color: var(--primary); margin-top: 20px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary);">🏥 7. RECOMMANDATION D'HOSPITALISATION</h3>
 
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer;">
-                                <input type="checkbox" id="cerHospitalizationRecommended" onchange="toggleHospitalizationFields()">
-                                <span>✓ Recommander une hospitalisation</span>
-                            </label>
+                        <!-- Sélecteur d'urgence dynamique -->
+                        <div class="urgency-selector" style="margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: var(--dark); margin-bottom: 15px; font-size: 14px;">🚨 Niveau d'Urgence</div>
+                            <div class="urgency-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+                                <!-- Pas d'hospitalisation -->
+                                <div class="urgency-card" data-urgency="none" onclick="selectUrgencyLevel('none')" style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border: 2px solid #d1d5db; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="urgency-icon" style="font-size: 20px; margin-bottom: 8px; transition: transform 0.3s ease;">🏠</div>
+                                    <div class="urgency-title" style="font-weight: 600; color: #374151; margin-bottom: 4px;">Ambulatoire</div>
+                                    <div class="urgency-desc" style="font-size: 11px; color: #6b7280; opacity: 0.8;">Pas d'hospitalisation</div>
+                                    <div class="urgency-checkmark" style="position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; background: rgba(107, 114, 128, 0.2); border: 2px solid #6b7280; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #6b7280; font-size: 10px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="urgency-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(107, 114, 128, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Programmée -->
+                                <div class="urgency-card" data-urgency="programmee" onclick="selectUrgencyLevel('programmee')" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="urgency-icon" style="font-size: 20px; margin-bottom: 8px; transition: transform 0.3s ease;">📅</div>
+                                    <div class="urgency-title" style="font-weight: 600; color: #1e40af; margin-bottom: 4px;">Programmée</div>
+                                    <div class="urgency-desc" style="font-size: 11px; color: #1d4ed8; opacity: 0.8;">Hospitalisation planifiée</div>
+                                    <div class="urgency-checkmark" style="position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #3b82f6; font-size: 10px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="urgency-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(59, 130, 246, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Semi-urgente -->
+                                <div class="urgency-card" data-urgency="semi-urgente" onclick="selectUrgencyLevel('semi-urgente')" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="urgency-icon" style="font-size: 20px; margin-bottom: 8px; transition: transform 0.3s ease;">⚠️</div>
+                                    <div class="urgency-title" style="font-weight: 600; color: #92400e; margin-bottom: 4px;">Semi-urgente</div>
+                                    <div class="urgency-desc" style="font-size: 11px; color: #a16207; opacity: 0.8;">Dans les 24-48h</div>
+                                    <div class="urgency-checkmark" style="position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; background: rgba(245, 158, 11, 0.2); border: 2px solid #f59e0b; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #f59e0b; font-size: 10px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="urgency-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(245, 158, 11, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Urgente -->
+                                <div class="urgency-card" data-urgency="urgente" onclick="selectUrgencyLevel('urgente')" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                    <div class="urgency-icon" style="font-size: 20px; margin-bottom: 8px; transition: transform 0.3s ease;">🚨</div>
+                                    <div class="urgency-title" style="font-weight: 600; color: #dc2626; margin-bottom: 4px;">Urgente</div>
+                                    <div class="urgency-desc" style="font-size: 11px; color: #b91c1c; opacity: 0.8;">Admission immédiate</div>
+                                    <div class="urgency-checkmark" style="position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #ef4444; font-size: 10px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="urgency-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(239, 68, 68, 0.3); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+
+                                <!-- Extrême urgence -->
+                                <div class="urgency-card" data-urgency="extreme-urgence" onclick="selectUrgencyLevel('extreme-urgence')" style="background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%); border: 2px solid #dc2626; border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; animation: pulse 2s infinite;">
+                                    <div class="urgency-icon" style="font-size: 20px; margin-bottom: 8px; transition: transform 0.3s ease;">🚑</div>
+                                    <div class="urgency-title" style="font-weight: 600; color: #fef2f2; margin-bottom: 4px;">Extrême Urgence</div>
+                                    <div class="urgency-desc" style="font-size: 11px; color: #fecaca; opacity: 0.9;">Réanimation immédiate</div>
+                                    <div class="urgency-checkmark" style="position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; border-radius: 50%; background: rgba(239, 68, 68, 0.3); border: 2px solid #dc2626; display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.8); transition: all 0.3s ease;">
+                                        <span style="color: #dc2626; font-size: 10px; font-weight: bold;">✓</span>
+                                    </div>
+                                    <div class="urgency-ripple" style="position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(239, 68, 68, 0.4); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Indicateur d'urgence sélectionnée -->
+                            <div id="selectedUrgencyIndicator" style="display: none; margin-top: 15px; padding: 12px; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.3s ease;">
+                                <span id="selectedUrgencyText"></span>
+                            </div>
                         </div>
 
-                        <div id="hospitalizationFields" style="display: none; border: 2px dashed var(--secondary); padding: 20px; border-radius: 8px; margin: 20px 0; background: rgba(40, 167, 69, 0.05);">
-                            <div class="form-group">
-                                <label for="cerHospitalizationReason">Raison de l'Hospitalisation *</label>
-                                <textarea id="cerHospitalizationReason" placeholder="Justification médicale de l'hospitalisation..."></textarea>
+                        <!-- Zone de détails d'hospitalisation dynamique -->
+                        <div id="hospitalizationDetailsContainer" style="display: none; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 15px; transition: all 0.3s ease;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                                <span style="font-size: 20px;">🏥</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--dark);">Détails d'hospitalisation</div>
+                                    <div style="font-size: 12px; color: #64748b;">Informations complémentaires pour l'admission</div>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="cerExpectedDuration">Durée Estimée (jours)</label>
-                                <input type="number" id="cerExpectedDuration" min="1" placeholder="Ex: 7">
-                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div class="form-group">
+                                    <label for="cerHospitalizationReason">Raison Médicale *</label>
+                                    <textarea id="cerHospitalizationReason" placeholder="Justification détaillée de l'hospitalisation..." style="width: 100%; min-height: 60px; border: 2px solid #cbd5e1; border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'"></textarea>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="cerUrgency">Urgence *</label>
-                                <select id="cerUrgency">
-                                    <option value="">-- Sélectionner --</option>
-                                    <option value="Programmée">Programmée</option>
-                                    <option value="Semi-urgente">Semi-urgente</option>
-                                    <option value="Urgente">Urgente</option>
-                                    <option value="Extrême urgence">Extrême urgence</option>
-                                </select>
+                                <div class="form-group">
+                                    <label for="cerExpectedDuration">Durée Estimée (jours)</label>
+                                    <input type="number" id="cerExpectedDuration" min="1" placeholder="Ex: 7" style="width: 100%; padding: 8px; border: 2px solid #cbd5e1; border-radius: 6px; font-family: inherit;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
+                                </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="cerSpecializedUnit">Service Spécialisé Requis</label>
-                                <input type="text" id="cerSpecializedUnit" placeholder="Ex: Soins intensifs, Chirurgie, etc.">
+                                <select id="cerSpecializedUnit" style="width: 100%; padding: 8px; border: 2px solid #cbd5e1; border-radius: 6px; font-family: inherit; background: white;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
+                                    <option value="">-- Sélectionner un service --</option>
+                                    <option value="Médecine Interne">🏥 Médecine Interne</option>
+                                    <option value="Chirurgie">🔪 Chirurgie</option>
+                                    <option value="Soins Intensifs">🚑 Soins Intensifs</option>
+                                    <option value="Cardiologie">❤️ Cardiologie</option>
+                                    <option value="Pédiatrie">👶 Pédiatrie</option>
+                                    <option value="Gynécologie">👩 Gynécologie</option>
+                                    <option value="Neurologie">🧠 Neurologie</option>
+                                    <option value="Oncologie">🎗️ Oncologie</option>
+                                    <option value="Urgences">🚨 Urgences</option>
+                                    <option value="Autre">⚕️ Autre</option>
+                                </select>
+                            </div>
+
+                            <!-- Recommandations automatiques basées sur les examens -->
+                            <div id="autoRecommendations" style="display: none; margin-top: 15px; padding: 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #1e40af; margin-bottom: 8px;">💡 Recommandations automatiques :</div>
+                                <div id="autoRecommendationsList" style="font-size: 13px; color: #1d4ed8;"></div>
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary" style="width: 100%;">🩺 Créer consultation et QR Code</button>
                     </form>
-
-                    <!-- Section de scan QR -->
-                    <div id="qrScannerSection" style="display: none; margin-top: 20px; padding: 20px; border: 2px solid var(--primary); border-radius: 10px; background: var(--light);">
-                        <h3 style="color: var(--primary); margin-bottom: 15px;">📷 Scanner QR Code</h3>
-                        <video id="qrVideo" width="320" height="240" autoplay playsinline style="border-radius: 8px; border: 1px solid var(--border);"></video>
-                        <div style="margin-top: 10px;">
-                            <button type="button" class="btn btn-danger btn-small" onclick="stopQRScanner()">⏹️ Arrêter Scanner</button>
-                        </div>
-                        <div id="qrStatus" style="margin-top: 10px; font-weight: bold;">Initialisation du scanner...</div>
-                    </div>
 
                     <!-- Section de la capture pour la Cérémonie -->
                     <div class="camera-section">
@@ -2784,13 +3187,122 @@
         let createTabUnlocked = true;
         let ceremonyTabUnlocked = true;
 
-        // ============ HOSPITALISATION WORKFLOW ============
-        // Toggle hospitalization fields visibility
-        function toggleHospitalizationFields() {
-            const isChecked = document.getElementById('cerHospitalizationRecommended')?.checked;
-            const fieldsDiv = document.getElementById('hospitalizationFields');
-            if (fieldsDiv) {
-                fieldsDiv.style.display = isChecked ? 'block' : 'none';
+        // Gestion moderne de l'hospitalisation
+        let selectedUrgency = null;
+
+        function selectUrgencyLevel(urgencyLevel) {
+            // Reset all cards
+            document.querySelectorAll('.urgency-card').forEach(card => {
+                card.classList.remove('selected');
+                const checkmark = card.querySelector('.urgency-checkmark');
+                const ripple = card.querySelector('.urgency-ripple');
+                checkmark.style.opacity = '0';
+                checkmark.style.transform = 'scale(0.8)';
+                ripple.style.width = '0';
+                ripple.style.height = '0';
+            });
+
+            if (selectedUrgency === urgencyLevel) {
+                // Deselect if clicking the same
+                selectedUrgency = null;
+                updateHospitalizationUI();
+                return;
+            }
+
+            // Select new urgency
+            selectedUrgency = urgencyLevel;
+            const selectedCard = document.querySelector(`[data-urgency="${urgencyLevel}"]`);
+            const checkmark = selectedCard.querySelector('.urgency-checkmark');
+            const ripple = selectedCard.querySelector('.urgency-ripple');
+            const icon = selectedCard.querySelector('.urgency-icon');
+
+            selectedCard.classList.add('selected');
+            checkmark.style.opacity = '1';
+            checkmark.style.transform = 'scale(1)';
+            icon.style.transform = 'scale(1.1)';
+
+            // Ripple effect
+            ripple.style.width = '300px';
+            ripple.style.height = '300px';
+            setTimeout(() => {
+                ripple.style.width = '0';
+                ripple.style.height = '0';
+            }, 600);
+
+            updateHospitalizationUI();
+        }
+
+        function updateHospitalizationUI() {
+            const indicator = document.getElementById('selectedUrgencyIndicator');
+            const detailsContainer = document.getElementById('hospitalizationDetailsContainer');
+
+            if (selectedUrgency && selectedUrgency !== 'none') {
+                // Show indicator
+                indicator.style.display = 'block';
+                const urgencyLabels = {
+                    'programmee': { text: 'Hospitalisation programmée', color: '#3b82f6', bg: '#dbeafe' },
+                    'semi-urgente': { text: 'Hospitalisation semi-urgente', color: '#f59e0b', bg: '#fef3c7' },
+                    'urgente': { text: 'Hospitalisation urgente', color: '#ef4444', bg: '#fee2e2' },
+                    'extreme-urgence': { text: 'HOSPITALISATION EN EXTREME URGENCE', color: '#dc2626', bg: '#450a0a' }
+                };
+
+                const label = urgencyLabels[selectedUrgency];
+                indicator.style.background = label.bg;
+                indicator.style.color = label.color;
+                indicator.style.border = `2px solid ${label.color}`;
+                document.getElementById('selectedUrgencyText').textContent = `🚨 ${label.text}`;
+
+                // Show details container
+                detailsContainer.style.display = 'block';
+                detailsContainer.style.opacity = '0';
+                detailsContainer.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    detailsContainer.style.opacity = '1';
+                    detailsContainer.style.transform = 'translateY(0)';
+                }, 50);
+
+                // Generate auto recommendations
+                generateAutoRecommendations();
+            } else {
+                // Hide everything
+                indicator.style.display = 'none';
+                detailsContainer.style.opacity = '0';
+                detailsContainer.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    detailsContainer.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function generateAutoRecommendations() {
+            const recommendationsDiv = document.getElementById('autoRecommendations');
+            const recommendationsList = document.getElementById('autoRecommendationsList');
+
+            const recommendations = [];
+
+            // Based on selected exams
+            if (selectedExams.ecg) recommendations.push("• Surveillance cardiaque continue recommandée");
+            if (selectedExams.endoscopie || selectedExams.coloscopie) recommendations.push("• Préparation digestive nécessaire");
+            if (selectedExams.biopsie) recommendations.push("• Suivi histologique obligatoire");
+            if (selectedExams.irm || selectedExams.scanner) recommendations.push("• Contrôle d'allergie aux produits de contraste");
+            if (selectedExams.fibroscopie) recommendations.push("• Jeûne de 6h minimum");
+            if (selectedExams.echocardiographie) recommendations.push("• Consultation cardiologique spécialisée");
+
+            // Based on urgency
+            if (selectedUrgency === 'urgente' || selectedUrgency === 'extreme-urgence') {
+                recommendations.push("• Transfert rapide vers le service d'urgence");
+                recommendations.push("• Mise en place de voie veineuse périphérique");
+            }
+            if (selectedUrgency === 'extreme-urgence') {
+                recommendations.push("• Activation du code rouge");
+                recommendations.push("• Préparation de la salle de réanimation");
+            }
+
+            if (recommendations.length > 0) {
+                recommendationsList.innerHTML = recommendations.join('<br>');
+                recommendationsDiv.style.display = 'block';
+            } else {
+                recommendationsDiv.style.display = 'none';
             }
         }
 
@@ -3041,6 +3553,46 @@
             }
         }
 
+        function markPatientAsDeceased(patientId) {
+            const patient = visitors.find(v => v.id === patientId);
+            if (!patient) {
+                console.error('Patient not found:', patientId);
+                return;
+            }
+            
+            if (confirm(`⚠️ ATTENTION: Confirmer le décès de ${patient.name || patient.cerName}? Cette action est irréversible.`)) {
+                console.log('Marking patient as deceased:', patientId);
+                
+                // Update patient status
+                patient.hospitalizationStatus = 'deceased';
+                if (!patient.hospitalizationData) patient.hospitalizationData = {};
+                patient.hospitalizationData.deathDateTime = new Date().toISOString();
+                
+                // Also update the consultation if it exists
+                const consultation = visitors.find(v => 
+                    v.category === 'ceremonie' && v.fileNumber === patient.fileNumber
+                );
+                if (consultation) {
+                    console.log('Updating consultation status to deceased');
+                    consultation.status = 'deceased';
+                    if (!consultation.hospitalizationData) consultation.hospitalizationData = {};
+                    consultation.hospitalizationData.deathDateTime = new Date().toISOString();
+                    consultation.hospitalizationData.unitType = 'deceased';
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('visitors', JSON.stringify(visitors));
+                console.log('Data saved to localStorage');
+                
+                alert('💀 Patient marqué comme décédé');
+                
+                // Refresh displays
+                console.log('Refreshing displays');
+                displayICUPatients();
+                displayAllPatients();
+            }
+        }
+
         // ============ HOSPITALIZATION SECTIONS NAVIGATION ============
 
         // Switch between General and ICU sections
@@ -3052,16 +3604,35 @@
             const btnGeneral = document.getElementById('btnGeneralHosp');
             const btnICU = document.getElementById('btnICUHosp');
             
+            // Animations fluides pour les sections
+            const fadeOutSection = (element) => {
+                element.style.opacity = '0';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                    element.style.opacity = '1';
+                    element.style.transition = 'opacity 0.3s ease-out';
+                }, 150);
+            };
+            
+            const fadeInSection = (element) => {
+                element.style.display = 'block';
+                element.style.opacity = '0';
+                element.style.transition = 'opacity 0.3s ease-out';
+                requestAnimationFrame(() => {
+                    element.style.opacity = '1';
+                });
+            };
+            
             if (section === 'general') {
-                generalSection.style.display = 'block';
-                icuSection.style.display = 'none';
+                fadeOutSection(icuSection);
+                fadeInSection(generalSection);
                 btnGeneral.classList.add('btn-primary');
                 btnGeneral.classList.remove('btn-secondary');
                 btnICU.classList.remove('btn-primary');
                 btnICU.classList.add('btn-secondary');
             } else {
-                generalSection.style.display = 'none';
-                icuSection.style.display = 'block';
+                fadeOutSection(generalSection);
+                fadeInSection(icuSection);
                 btnGeneral.classList.remove('btn-primary');
                 btnGeneral.classList.add('btn-secondary');
                 btnICU.classList.add('btn-primary');
@@ -3072,8 +3643,8 @@
         // Get ICU patients
         function getICUPatients() {
             return visitors.filter(v => 
-                (v.status === 'hospitalized' && v.hospitalizationData?.unitType === 'icu') ||
-                v.hospitalizationStatus === 'icu'
+                (v.category === 'patient' && v.hospitalizationStatus === 'icu') ||
+                (v.status === 'hospitalized' && v.hospitalizationData?.unitType === 'icu')
             );
         }
 
@@ -3088,13 +3659,25 @@
                 return;
             }
             
-            container.innerHTML = icuPatients.map(h => `
+            container.innerHTML = icuPatients.map(h => {
+                // Si c'est un patient, chercher sa consultation associée pour les infos cliniques
+                let clinicalData = h;
+                if (h.category === 'patient') {
+                    const consultation = visitors.find(v => 
+                        v.category === 'ceremonie' && v.fileNumber === h.fileNumber
+                    );
+                    if (consultation) {
+                        clinicalData = consultation;
+                    }
+                }
+                
+                return `
                 <div style="background: linear-gradient(135deg, #fee 0%, #fcc 100%); border: 2px solid var(--danger); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                         <div><strong>👤 Nom:</strong> ${h.name || h.cerName || 'N/A'}</div>
                         <div><strong>📋 Dossier:</strong> ${h.fileNumber || 'N/A'}</div>
-                        <div><strong>📅 Diagnostic:</strong> ${h.cerDiagnosticPrincipal || 'N/A'}</div>
-                        <div><strong>⚠️ Gravité:</strong> <span style="color: var(--danger);">${h.cerGravite || 'N/A'}</span></div>
+                        <div><strong>📅 Diagnostic:</strong> ${clinicalData.cerDiagnosticPrincipal || 'N/A'}</div>
+                        <div><strong>⚠️ Gravité:</strong> <span style="color: var(--danger);">${clinicalData.cerGravite || 'N/A'}</span></div>
                     </div>
                     <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--danger);">
                         <div><strong>🏨 Lit:</strong> ${h.hospitalizationData?.bed || 'N/A'}</div>
@@ -3104,8 +3687,10 @@
                     </div>
                     <button type="button" class="btn btn-secondary btn-small" onclick="editHospitalization('${h.id}')">✏️ Modifier</button>
                     <button type="button" class="btn btn-warning btn-small" onclick="dischargePatient('${h.id}')" style="margin-left: 5px;">🚪 Sortie</button>
+                    <button type="button" class="btn btn-dark btn-small" onclick="markPatientAsDeceased('${h.id}')" style="margin-left: 5px; background: #7c3aed; border-color: #7c3aed;" title="Marquer comme décédé">💀 Décédé</button>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         // Prepare ICU admission form  
@@ -3210,7 +3795,7 @@
 
         // Get consultations that need lab analysis
         function getConsultationsPendingLabAnalysis() {
-            return visitors.filter(v => v.category === 'ceremonie' && (v.cerLaboChecked || v.cerRadioChecked || v.cerEchoChecked || v.cerScannerChecked) && v.status === 'consultation');
+            return visitors.filter(v => v.category === 'ceremonie' && (v.cerLaboChecked || v.cerRadioChecked || v.cerEchoChecked || v.cerScannerChecked || v.cerEcgChecked || v.cerEndoscopieChecked || v.cerBiopsieChecked || v.cerMammographieChecked || v.cerIrmChecked || v.cerEchocardiographieChecked || v.cerColoscopieChecked || v.cerFibroscopieChecked || v.cerAutreExamChecked) && v.status === 'consultation');
         }
 
         // Display pending lab patients
@@ -3233,7 +3818,21 @@
                     </div>
                     <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--primary);">
                         <strong>🧪 Examens demandés:</strong>
-                        ${[p.cerLaboChecked ? '🩸 Labo' : '', p.cerRadioChecked ? '📷 Radio' : '', p.cerEchoChecked ? '📡 Echo' : '', p.cerScannerChecked ? '🔬 Scanner' : ''].filter(x => x).join(', ')}
+                        ${[
+                            p.cerLaboChecked ? '🩸 Labo' : '',
+                            p.cerRadioChecked ? '📷 Radio' : '',
+                            p.cerEchoChecked ? '📡 Écho' : '',
+                            p.cerScannerChecked ? '🔬 Scanner' : '',
+                            p.cerEcgChecked ? '❤️ ECG' : '',
+                            p.cerEndoscopieChecked ? '🔍 Endoscopie' : '',
+                            p.cerBiopsieChecked ? '🧬 Biopsie' : '',
+                            p.cerMammographieChecked ? '👩 Mammographie' : '',
+                            p.cerIrmChecked ? '🧲 IRM' : '',
+                            p.cerEchocardiographieChecked ? '💚 Échocardiographie' : '',
+                            p.cerColoscopieChecked ? '🫄 Coloscopie' : '',
+                            p.cerFibroscopieChecked ? '👃 Fibroscopie' : '',
+                            p.cerAutreExamChecked ? '⚙️ Autre' : ''
+                        ].filter(x => x).join(', ')}
                     </div>
                     <button type="button" class="btn btn-primary" onclick="prepareLabAnalysisForm('${p.id}')" style="width: 100%;">➕ Enregistrer Analyse</button>
                 </div>
@@ -3255,7 +3854,16 @@
                 consultation.cerLaboChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🩸 Laboratoire</span>' : '',
                 consultation.cerRadioChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">📷 Radiographie</span>' : '',
                 consultation.cerEchoChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">📡 Échographie</span>' : '',
-                consultation.cerScannerChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🔬 Scanner</span>' : ''
+                consultation.cerScannerChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🔬 Scanner</span>' : '',
+                consultation.cerEcgChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">❤️ ECG</span>' : '',
+                consultation.cerEndoscopieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🔍 Endoscopie</span>' : '',
+                consultation.cerBiopsieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🧬 Biopsie</span>' : '',
+                consultation.cerMammographieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">👩 Mammographie</span>' : '',
+                consultation.cerIrmChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🧲 IRM</span>' : '',
+                consultation.cerEchocardiographieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">💚 Échocardiographie</span>' : '',
+                consultation.cerColoscopieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">🫄 Coloscopie</span>' : '',
+                consultation.cerFibroscopieChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">👃 Fibroscopie</span>' : '',
+                consultation.cerAutreExamChecked ? '<span style="background: var(--light); padding: 5px 10px; border-radius: 5px;">⚙️ Autre</span>' : ''
             ].filter(x => x).join('');
             
             document.getElementById('labTestsRequested').innerHTML = testsHTML || '<p>Aucun test demandé</p>';
@@ -3779,13 +4387,25 @@
 
             // plus de protection par mot de passe pour les onglets de création
 
-            // Supp class active de tous les onglets et boutons
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            // Retirer la classe active de tous les onglets
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) {
+                activeTab.classList.remove('active');
+                // Attendre que l'animation fadeOut se termine avant de changer l'affichage
+                setTimeout(() => {
+                    activeTab.style.display = 'none';
+                }, 200);
+            }
+            
+            // Retirer la classe active de tous les boutons
             document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
             
-            // Ajouter class active a l'onglet selectionne
+            // Afficher le nouvel onglet
             const tabElement = document.getElementById(tabName);
             if (tabElement) {
+                tabElement.style.display = 'block';
+                // Forcer le navigateur à recalculer le layout avant d'ajouter la classe active
+                void tabElement.offsetWidth;
                 tabElement.classList.add('active');
             }
             
@@ -4060,7 +4680,7 @@
         let qrScanning = false;
 
         function scanQRCode() {
-            const scannerSection = document.getElementById('qrScannerSection');
+            const scannerSection = document.getElementById('qrScannerInline');
             const video = document.getElementById('qrVideo');
             const status = document.getElementById('qrStatus');
 
@@ -4143,7 +4763,7 @@
 
         function stopQRScanner() {
             qrScanning = false;
-            const scannerSection = document.getElementById('qrScannerSection');
+            const scannerSection = document.getElementById('qrScannerInline');
             const video = document.getElementById('qrVideo');
             const status = document.getElementById('qrStatus');
 
@@ -4217,6 +4837,164 @@
             document.getElementById('cerConsultationTime').value = today.toTimeString().slice(0, 5);
         }
 
+        // Gestion moderne des examens demandés
+        let selectedExams = {
+            labo: false,
+            radio: false,
+            echo: false,
+            scanner: false,
+            ecg: false,
+            endoscopie: false,
+            biopsie: false,
+            mammographie: false,
+            irm: false,
+            echocardiographie: false,
+            coloscopie: false,
+            fibroscopie: false,
+            autre: false
+        };
+
+        function toggleExamSelection(examType) {
+            const card = document.querySelector(`[data-exam="${examType}"]`);
+            const checkmark = card.querySelector('.exam-checkmark');
+            const ripple = card.querySelector('.exam-ripple');
+            const icon = card.querySelector('.exam-icon');
+
+            // Toggle selection
+            selectedExams[examType] = !selectedExams[examType];
+
+            if (selectedExams[examType]) {
+                // Selected state
+                card.style.transform = 'scale(0.98)';
+                card.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                checkmark.style.opacity = '1';
+                checkmark.style.transform = 'scale(1)';
+                icon.style.transform = 'scale(1.1)';
+
+                // Ripple effect
+                ripple.style.width = '300px';
+                ripple.style.height = '300px';
+
+                // Reset ripple after animation
+                setTimeout(() => {
+                    ripple.style.width = '0';
+                    ripple.style.height = '0';
+                }, 600);
+
+                // Reset transform after animation
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 150);
+            } else {
+                // Unselected state
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                checkmark.style.opacity = '0';
+                checkmark.style.transform = 'scale(0.8)';
+                icon.style.transform = 'scale(1)';
+            }
+
+            updateSelectedExamsDisplay();
+            updateExamDetailsVisibility();
+        }
+
+        function updateSelectedExamsDisplay() {
+            const container = document.getElementById('selectedExamsContainer');
+            const tagsContainer = document.getElementById('selectedExamsTags');
+
+            const selectedCount = Object.values(selectedExams).filter(Boolean).length;
+
+            if (selectedCount > 0) {
+                container.style.display = 'block';
+                tagsContainer.innerHTML = '';
+
+                const examLabels = {
+                    labo: { text: 'Laboratoire', color: '#f59e0b', bg: '#fef3c7' },
+                    radio: { text: 'Radiographie', color: '#3b82f6', bg: '#dbeafe' },
+                    echo: { text: 'Échographie', color: '#10b981', bg: '#dcfce7' },
+                    scanner: { text: 'Scanner', color: '#6366f1', bg: '#e0e7ff' },
+                    ecg: { text: 'ECG', color: '#ec4899', bg: '#fce7f3' },
+                    endoscopie: { text: 'Endoscopie', color: '#059669', bg: '#d1fae5' },
+                    biopsie: { text: 'Biopsie', color: '#8b5cf6', bg: '#ede9fe' },
+                    mammographie: { text: 'Mammographie', color: '#db2777', bg: '#fce7f3' },
+                    irm: { text: 'IRM', color: '#2563eb', bg: '#dbeafe' },
+                    echocardiographie: { text: 'Échocardiographie', color: '#0d9488', bg: '#ccfbf1' },
+                    coloscopie: { text: 'Coloscopie', color: '#d97706', bg: '#fef3c7' },
+                    fibroscopie: { text: 'Fibroscopie', color: '#ea580c', bg: '#fed7aa' },
+                    autre: { text: 'Autre', color: '#6b7280', bg: '#f3f4f6' }
+                };
+
+                Object.entries(selectedExams).forEach(([key, selected]) => {
+                    if (selected) {
+                        const label = examLabels[key];
+                        const tag = document.createElement('div');
+                        tag.style.cssText = `
+                            background: ${label.bg};
+                            color: ${label.color};
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            border: 1px solid ${label.color}20;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 6px;
+                            animation: fadeInTag 0.3s ease;
+                        `;
+                        tag.innerHTML = `
+                            <span>${getExamIcon(key)}</span>
+                            <span>${label.text}</span>
+                            <button onclick="toggleExamSelection('${key}'); event.stopPropagation();" style="background: none; border: none; color: ${label.color}; cursor: pointer; font-size: 14px; line-height: 1; margin-left: 4px;">×</button>
+                        `;
+                        tagsContainer.appendChild(tag);
+                    }
+                });
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function updateExamDetailsVisibility() {
+            const detailsContainer = document.getElementById('examDetailsContainer');
+            const hasSelection = Object.values(selectedExams).some(Boolean);
+
+            if (hasSelection) {
+                detailsContainer.style.display = 'block';
+                detailsContainer.style.opacity = '0';
+                detailsContainer.style.transform = 'translateY(10px)';
+
+                setTimeout(() => {
+                    detailsContainer.style.opacity = '1';
+                    detailsContainer.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                detailsContainer.style.opacity = '0';
+                detailsContainer.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    detailsContainer.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        function getExamIcon(examType) {
+            const icons = {
+                labo: '🩸',
+                radio: '📷',
+                echo: '📡',
+                scanner: '🔬',
+                ecg: '❤️',
+                endoscopie: '🔍',
+                biopsie: '🧬',
+                mammographie: '👩',
+                irm: '🧲',
+                echocardiographie: '💚',
+                coloscopie: '🫄',
+                fibroscopie: '👃',
+                autre: '⚙️'
+            };
+            return icons[examType] || '📋';
+        }
+
         // Créer une consultation
         function createCeremony(e) {
             e.preventDefault();
@@ -4285,18 +5063,29 @@
                 cerGravite: document.getElementById('cerGravite')?.value || '',
                 
                 // Examens demandés
-                cerLaboChecked: document.getElementById('cerLaboChecked')?.checked || false,
-                cerRadioChecked: document.getElementById('cerRadioChecked')?.checked || false,
-                cerEchoChecked: document.getElementById('cerEchoChecked')?.checked || false,
-                cerScannerChecked: document.getElementById('cerScannerChecked')?.checked || false,
-                cerAutreExamChecked: document.getElementById('cerAutreExamChecked')?.checked || false,
+                cerLaboChecked: selectedExams.labo,
+                cerRadioChecked: selectedExams.radio,
+                cerEchoChecked: selectedExams.echo,
+                cerScannerChecked: selectedExams.scanner,
+                cerEcgChecked: selectedExams.ecg,
+                cerEndoscopieChecked: selectedExams.endoscopie,
+                cerBiopsieChecked: selectedExams.biopsie,
+                cerMammographieChecked: selectedExams.mammographie,
+                cerIrmChecked: selectedExams.irm,
+                cerEchocardiographieChecked: selectedExams.echocardiographie,
+                cerColoscopieChecked: selectedExams.coloscopie,
+                cerFibroscopieChecked: selectedExams.fibroscopie,
+                cerAutreExamChecked: selectedExams.autre,
                 cerPrecisionExamens: document.getElementById('cerPrecisionExamens')?.value || '',
-                
+
                 // Recommandation d'hospitalisation
-                cerHospitalizationRecommended: document.getElementById('cerHospitalizationRecommended')?.checked || false,
+                cerHospitalizationRecommended: selectedUrgency && selectedUrgency !== 'none',
                 cerHospitalizationReason: document.getElementById('cerHospitalizationReason')?.value || '',
                 cerExpectedDuration: document.getElementById('cerExpectedDuration')?.value || '',
-                cerUrgency: document.getElementById('cerUrgency')?.value || '',
+                cerUrgency: selectedUrgency === 'programmee' ? 'Programmée' :
+                           selectedUrgency === 'semi-urgente' ? 'Semi-urgente' :
+                           selectedUrgency === 'urgente' ? 'Urgente' :
+                           selectedUrgency === 'extreme-urgence' ? 'Extrême urgence' : '',
                 cerSpecializedUnit: document.getElementById('cerSpecializedUnit')?.value || '',
                 
                 // Status tracking
@@ -5572,7 +6361,10 @@ Age: ${visitor.age || 'N/A'}
                 let cardBackground = 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)';
                 let borderColor = 'var(--primary)';
                 
-                if (patient.hospitalizationStatus === 'hospitalized') {
+                if (patient.status === 'deceased' || patient.hospitalizationStatus === 'deceased') {
+                    cardBackground = 'linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%)';
+                    borderColor = '#7c3aed';
+                } else if (patient.hospitalizationStatus === 'hospitalized') {
                     cardBackground = 'linear-gradient(135deg, #fed7aa 0%, #fef3c7 100%)';
                     borderColor = '#ea580c';
                 } else if (patient.hospitalizationStatus === 'icu') {
@@ -5602,9 +6394,10 @@ Age: ${visitor.age || 'N/A'}
                             </div>
                             
                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px;">
-                                <button type="button" class="btn btn-success btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'non-hospitalized')" title="Non-Hospitaliser">✓ Bien</button>
-                                <button type="button" class="btn btn-warning btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'hospitalized')" title="Hospitaliser">🏥 Hosp</button>
-                                <button type="button" class="btn btn-danger btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'icu')" title="Soins Intensif">🚨 SI</button>
+                                ${(patient.status === 'deceased' || patient.hospitalizationStatus === 'deceased') 
+                                    ? '<div style="grid-column: 1/-1; text-align: center; padding: 10px; background: rgba(124, 58, 237, 0.1); border-radius: 6px; color: #7c3aed; font-weight: bold;">💀 DÉCÉDÉ</div>'
+                                    : `<button type="button" class="btn btn-success btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'non-hospitalized')" title="Non-Hospitaliser">✓ Bien</button><button type="button" class="btn btn-warning btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'hospitalized')" title="Hospitaliser">🏥 Hosp</button><button type="button" class="btn btn-danger btn-small" onclick="event.stopPropagation(); setPatientStatus('${patient.id}', 'icu')" title="Soins Intensif">🚨 SI</button>`
+                                }
                             </div>
                         </div>
                     </div>
@@ -6163,6 +6956,13 @@ Age: ${visitor.age || 'N/A'}
             updateDashboard();
             loadHospitalSettings();
             displaySystemStats();
+
+            // Initialiser l'interface des examens
+            updateSelectedExamsDisplay();
+            updateExamDetailsVisibility();
+
+            // Initialiser l'interface d'hospitalisation
+            updateHospitalizationUI();
         });
     </script>
 </body>
