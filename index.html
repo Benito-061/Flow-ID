@@ -1026,6 +1026,177 @@
             color: var(--dark) !important;
         }
 
+        /* Améliorer la lisibilité texte en mode sombre */
+        body.dark-theme p {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme label {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme h2,
+        body.dark-theme h3,
+        body.dark-theme h4,
+        body.dark-theme h5,
+        body.dark-theme h6 {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme .form-group label {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .btn-ghost {
+            color: #38bdf8;
+        }
+
+        body.dark-theme .btn-ghost:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        body.dark-theme .stat-label {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .modal-title {
+            color: #f1f5f9;
+        }
+
+        body.dark-theme [style*="color: #000"],
+        body.dark-theme [style*="color: black"],
+        body.dark-theme [style*="color: var(--dark)"] {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme .qr-text {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .visitor-item h4,
+        body.dark-theme .visitor-item p {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme table {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme table th {
+            background: #1f2937;
+            color: #cbd5e1;
+        }
+
+        body.dark-theme table td {
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+
+        body.dark-theme .form-group {
+            color: #e2e8f0;
+        }
+
+        body.dark-theme .btn-primary,
+        body.dark-theme .btn-secondary,
+        body.dark-theme .btn-success,
+        body.dark-theme .btn-danger {
+            color: white;
+        }
+
+        body.dark-theme .camera-status {
+            color: #cbd5e1;
+        }
+
+        body.dark-theme .visitors-grid {
+            color: #e2e8f0;
+        }
+
+        /* Améliorer les éléments avec couleurs de fond spécifiques */
+        body.dark-theme [style*="color: #065f46"],
+        body.dark-theme [style*="color: #15803d"],
+        body.dark-theme [style*="color: #10b981"],
+        body.dark-theme [style*="color: #047857"] {
+            color: #86efac !important;
+        }
+
+        body.dark-theme [style*="color: #991b1b"],
+        body.dark-theme [style*="color: #7f1d1d"],
+        body.dark-theme [style*="color: #dc2626"],
+        body.dark-theme [style*="color: #ef4444"] {
+            color: #fca5a5 !important;
+        }
+
+        body.dark-theme [style*="color: #1e40af"],
+        body.dark-theme [style*="color: #1e3a8a"],
+        body.dark-theme [style*="color: #3b82f6"] {
+            color: #93c5fd !important;
+        }
+
+        body.dark-theme [style*="color: #7c2d12"],
+        body.dark-theme [style*="color: #92400e"],
+        body.dark-theme [style*="color: #d97706"],
+        body.dark-theme [style*="color: #f59e0b"] {
+            color: #fbbf24 !important;
+        }
+
+        /* Améliorer la visibilité des messages et alertes en mode sombre */
+        body.dark-theme [style*="background: #dcfce7"],
+        body.dark-theme [style*="background: #d1fae5"] {
+            background: rgba(16, 185, 129, 0.15) !important;
+        }
+
+        body.dark-theme [style*="background: #fee2e2"],
+        body.dark-theme [style*="background: #fecaca"] {
+            background: rgba(239, 68, 68, 0.15) !important;
+        }
+
+        body.dark-theme [style*="background: #fef08a"],
+        body.dark-theme [style*="background: #fde047"] {
+            background: rgba(245, 158, 11, 0.15) !important;
+        }
+
+        body.dark-theme [style*="background: #f0fdf4"],
+        body.dark-theme [style*="background: #fffbeb"],
+        body.dark-theme [style*="background: #fef2f2"] {
+            background: #1f2937 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme [style*="border-color: #10b981"],
+        body.dark-theme [style*="border-color: #15803d"] {
+            border-color: rgba(134, 239, 172, 0.3) !important;
+        }
+
+        body.dark-theme [style*="border-color: #ef4444"],
+        body.dark-theme [style*="border-color: #dc2626"] {
+            border-color: rgba(252, 165, 165, 0.3) !important;
+        }
+
+        /* Statistiques en mode sombre */
+        body.dark-theme #statsMonthYear {
+            background: #1f2937 !important;
+            color: #e2e8f0 !important;
+            border-color: rgba(148, 163, 184, 0.3) !important;
+        }
+
+        body.dark-theme #statsMonthYear::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        body.dark-theme #statistics label {
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme #statistics table thead th {
+            background: #1f2937 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.dark-theme #statistics table tbody td {
+            color: #e2e8f0 !important;
+            border-color: #334155 !important;
+        }
+
         /* Back to Top Button */
         #backToTopBtn {
             position: fixed;
@@ -1359,6 +1530,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <button class="btn btn-primary" onclick="downloadStatsAsExcel()" style="margin-top: 15px; width: 100%;">
+                        📥 Télécharger les Statistiques (Excel)
+                    </button>
                 </div>
             </div>
         </div>
@@ -1477,6 +1651,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     
     <script>
         // ===================== MULTILINGUAL SYSTEM ======================
@@ -2804,6 +2979,43 @@
             if (v.endTime && !(v.endTime instanceof Date)) v.endTime = new Date(v.endTime);
             return v;
         });
+
+        // Initialiser la date minimale des champs de date
+        function initializeDateMinimum() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            // Définir le minimum à la date d'aujourd'hui à minuit
+            const minimumDateTime = `${year}-${month}-${day}T00:00`;
+            
+            const startDateInput = document.getElementById('startDateTime');
+            const endDateInput = document.getElementById('endDateTime');
+            
+            if (startDateInput) {
+                startDateInput.min = minimumDateTime;
+                startDateInput.addEventListener('change', function() {
+                    const selectedDate = new Date(this.value);
+                    if (selectedDate < new Date(minimumDateTime)) {
+                        alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
+                        this.value = '';
+                    }
+                });
+            }
+            if (endDateInput) {
+                endDateInput.min = minimumDateTime;
+                endDateInput.addEventListener('change', function() {
+                    const selectedDate = new Date(this.value);
+                    if (selectedDate < new Date(minimumDateTime)) {
+                        alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
+                        this.value = '';
+                    }
+                });
+            }
+        }
+        
+        // Appeler la fonction au chargement
+        document.addEventListener('DOMContentLoaded', initializeDateMinimum);
         let accessLog = JSON.parse(localStorage.getItem('accessLog')) || [];
         let currentQRCode = null;
         let currentPhotoCanvas = null;
@@ -2892,6 +3104,11 @@
         let ceremonyTabUnlocked = true;
 
         function switchTab(tabName, buttonElement) {
+
+            // Réinitialiser la date minimale quand on passe à l'onglet créer
+            if (tabName === 'create') {
+                setTimeout(initializeDateMinimum, 100);
+            }
 
             // Supp class active de tous les onglets et boutons
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -3079,6 +3296,28 @@
         // Cree un visiteur
         function createVisitor(e) {
             e.preventDefault();
+            
+            // Validation: vérifier que les dates ne sont pas antérieures à aujourd'hui
+            const startDateTime = new Date(document.getElementById('startDateTime').value);
+            const endDateTime = new Date(document.getElementById('endDateTime').value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (startDateTime < today) {
+                alert('❌ La date de début ne peut pas être antérieure à aujourd\'hui');
+                return;
+            }
+            
+            if (endDateTime < today) {
+                alert('❌ La date de fin ne peut pas être antérieure à aujourd\'hui');
+                return;
+            }
+            
+            if (endDateTime < startDateTime) {
+                alert('❌ La date de fin doit être après la date de début');
+                return;
+            }
+            
             if (!requireAuth()) {
                 console.warn('Utilisateur non connecté, création en mode invité.');
                 // continue anyway, QR code will still be generated
@@ -3098,8 +3337,8 @@
                 location: document.getElementById('visitorLocation').value,
                 service: document.getElementById('visitorService').value,
                 capacity: parseInt(document.getElementById('visitorCapacity').value) || 1,
-                startTime: new Date(document.getElementById('startDateTime').value),
-                endTime: new Date(document.getElementById('endDateTime').value),
+                startTime: startDateTime,
+                endTime: endDateTime,
                 notes: document.getElementById('visitorNotes').value,
                 createdAt: new Date(),
                 scans: [],
@@ -4516,6 +4755,11 @@ Sexe: ${visitor.sexe || 'N/A'}
                 '#00c9b7', '#ffb347', '#ff6f61', '#43e97b', '#ff3a3a', '#ffd166', '#6366f1'
             ];
 
+            // Déterminer les couleurs selon le mode
+            const isDarkMode = document.body.classList.contains('dark-theme');
+            const textColor = isDarkMode ? '#e2e8f0' : 'var(--dark)';
+            const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'var(--border)';
+
             if (appointmentChartInstance) {
                 appointmentChartInstance.destroy();
             }
@@ -4539,18 +4783,18 @@ Sexe: ${visitor.sexe || 'N/A'}
                     plugins: {
                         legend: {
                             display: true,
-                            labels: { color: 'var(--dark)' }
+                            labels: { color: textColor }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { color: 'var(--dark)' },
-                            grid: { color: 'var(--border)' }
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
                         },
                         x: {
-                            ticks: { color: 'var(--dark)' },
-                            grid: { color: 'var(--border)' }
+                            ticks: { color: textColor },
+                            grid: { color: gridColor }
                         }
                     }
                 }
@@ -4568,6 +4812,93 @@ Sexe: ${visitor.sexe || 'N/A'}
                     <td style="padding: 12px; text-align: center; color: var(--dark);">${((count / total) * 100).toFixed(1)}%</td>
                 </tr>
             `).join('');
+        }
+
+        function downloadStatsAsExcel() {
+            const monthInput = document.getElementById('statsMonthYear').value;
+            if (!monthInput) {
+                alert('Veuillez sélectionner un mois');
+                return;
+            }
+
+            try {
+                const [year, month] = monthInput.split('-');
+                const stats = generateAppointmentStats(parseInt(month), parseInt(year));
+                const total = Object.values(stats).reduce((sum, val) => sum + val, 0) || 1;
+
+                // Préparer les données CSV en fallback
+                let csvContent = 'Type de Rendez-vous,Nombre,Pourcentage\n';
+                
+                Object.entries(stats).forEach(([type, count]) => {
+                    const percentage = ((count / total) * 100).toFixed(1);
+                    csvContent += `"${translateAppointmentType(type)}",${count},${percentage}%\n`;
+                });
+
+                csvContent += `"TOTAL",${total},100%\n`;
+
+                // Essayer avec XLSX si disponible
+                if (typeof XLSX !== 'undefined' && XLSX.utils && XLSX.writeFile) {
+                    const data = [
+                        ['Type de Rendez-vous', 'Nombre', 'Pourcentage']
+                    ];
+
+                    Object.entries(stats).forEach(([type, count]) => {
+                        data.push([
+                            translateAppointmentType(type),
+                            count,
+                            ((count / total) * 100).toFixed(1) + '%'
+                        ]);
+                    });
+
+                    data.push(['TOTAL', total, '100%']);
+
+                    const ws = XLSX.utils.aoa_to_sheet(data);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Statistiques');
+
+                    ws['!cols'] = [
+                        { wch: 30 },
+                        { wch: 12 },
+                        { wch: 12 }
+                    ];
+
+                    XLSX.writeFile(wb, `Statistiques_${monthInput}.xlsx`);
+                } else {
+                    // Fallback: télécharger en CSV
+                    downloadCSV(csvContent, `Statistiques_${monthInput}.csv`);
+                }
+            } catch (error) {
+                console.error('Erreur lors du téléchargement:', error);
+                // Fallback final: télécharger en CSV directement
+                try {
+                    const [year, month] = monthInput.split('-');
+                    const stats = generateAppointmentStats(parseInt(month), parseInt(year));
+                    const total = Object.values(stats).reduce((sum, val) => sum + val, 0) || 1;
+                    
+                    let csvContent = 'Type de Rendez-vous,Nombre,Pourcentage\n';
+                    Object.entries(stats).forEach(([type, count]) => {
+                        const percentage = ((count / total) * 100).toFixed(1);
+                        csvContent += `"${translateAppointmentType(type)}",${count},${percentage}%\n`;
+                    });
+                    csvContent += `"TOTAL",${total},100%\n`;
+                    
+                    downloadCSV(csvContent, `Statistiques_${monthInput}.csv`);
+                } catch (fallbackError) {
+                    alert('Erreur lors du téléchargement. Veuillez réessayer.');
+                }
+            }
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Mise a jour du journal d'accès
@@ -5118,6 +5449,10 @@ Sexe: ${visitor.sexe || 'N/A'}
             const isDark = document.body.classList.toggle('dark-theme');
             localStorage.setItem('themeMode', isDark ? 'dark' : 'light');
             updateThemeButton();
+            // Redessiner le graphique si visible
+            if (document.getElementById('statistics').style.display !== 'none' && appointmentChartInstance) {
+                updateStatisticsChart();
+            }
         }
 
         // ===================== BACK TO TOP BUTTON ======================
