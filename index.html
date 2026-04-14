@@ -1025,6 +1025,45 @@
             border-color: rgba(148, 163, 184, 0.2) !important;
             color: var(--dark) !important;
         }
+
+        /* Back to Top Button */
+        #backToTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0, 201, 183, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #backToTopBtn:hover {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            box-shadow: 0 6px 16px rgba(0, 201, 183, 0.5);
+            transform: translateY(-2px);
+        }
+
+        #backToTopBtn:active {
+            transform: translateY(0);
+        }
+
+        body.dark-theme #backToTopBtn {
+            box-shadow: 0 4px 12px rgba(0, 201, 183, 0.2);
+        }
+
+        body.dark-theme #backToTopBtn:hover {
+            box-shadow: 0 6px 16px rgba(0, 201, 183, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -1054,7 +1093,23 @@
                     <button class="nav-tab" onclick="switchTab('create', this)">➕ Ajouter un rendez-vous</button>
                     <button class="nav-tab" onclick="switchTab('verify', this)">✓ Vérifier</button>
                     <button class="nav-tab" onclick="switchTab('history', this)">📜 Historique</button>
+                    <button class="nav-tab" onclick="switchTab('statistics', this)">📈 Statistiques</button>
                     <button class="nav-tab" onclick="openAboutModal()">ℹ️ A propos</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="languageSelector" style="font-weight: 600; color: var(--dark); white-space: nowrap;">🌐</label>
+                    <select id="languageSelector" onchange="changeLanguage(this.value)" style="padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; background: white; color: var(--dark); font-weight: 500; cursor: pointer;">
+                        <option value="en">English</option>
+                        <option value="zh">中文 (Chinese)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="es">Español (Spanish)</option>
+                        <option value="fr">Français (French)</option>
+                        <option value="ar">العربية (Arabic)</option>
+                        <option value="pt">Português (Portuguese)</option>
+                        <option value="ru">Русский (Russian)</option>
+                        <option value="ja">日本語 (Japanese)</option>
+                        <option value="de">Deutsch (German)</option>
+                    </select>
                 </div>
  
         </header>
@@ -1078,8 +1133,12 @@
 
             <div class="main-content">
                 <div class="card">
-                    <h2>Total Actifs</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 style="margin: 0;">Total Actifs</h2>
+                        <button id="toggleVisitorsBtn" class="btn btn-secondary btn-small" onclick="toggleVisitorsExpand()" style="display: none;">📂 Déplier</button>
+                    </div>
                     <div class="visitors-grid" id="visitorsActive"></div>
+                    <div class="visitors-grid" id="visitorsActiveHidden" style="display: none;"></div>
                 </div>
 
                 <div class="card">
@@ -1132,13 +1191,13 @@
                             <label for="visitorType">Type de Rendez-vous</label>
                             <select id="visitorType" required>
                                  <option value="">-- Sélectionner --</option>
-                                <option value="visiteur">Rendez-vous Entreprise</option>
-                                <option value="Rendez-vous medical">Rendez-vous Medical</option>
-                                <option value="participant">Participant Événement</option>
-                                <option value="invite">Invité</option>
-                                <option value="prestataire">Prestataire</option>
-                                <option value="salle_de_sport">Salle de sport</option>
-                                <option value="visiteur">Visiteur</option>
+                                <option value="Rendez-vous Entreprise">Rendez-vous Entreprise</option>
+                                <option value="Rendez-vous Medical">Rendez-vous Medical</option>
+                                <option value="Participant Événement">Participant Événement</option>
+                                <option value="Invité">Invité</option>
+                                <option value="Prestataire">Prestataire</option>
+                                <option value="Salle de sport">Salle de sport</option>
+                                <option value="Visiteur">Visiteur</option>
                             </select>
                         </div>
 
@@ -1270,6 +1329,39 @@
                 <div id="accessLog" style="margin-top: 20px;"></div>
             </div>
         </div>
+
+        <!-- Onglet Statistiques -->
+        <div id="statistics" class="tab-content">
+            <div class="main-content">
+                <div class="card">
+                    <h2>📈 Statistiques Mensuelles</h2>
+                    <div style="margin-bottom: 20px;">
+                        <label for="statsMonthYear" style="font-weight: 600; color: var(--dark); margin-right: 10px;">Mois:</label>
+                        <input type="month" id="statsMonthYear" style="padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; background: white; color: var(--dark); font-weight: 500;">
+                        <button class="btn btn-primary btn-small" onclick="updateStatisticsChart()" style="margin-left: 10px;">Actualiser</button>
+                    </div>
+                    <canvas id="appointmentChart" style="max-height: 400px;"></canvas>
+                </div>
+
+                <div class="card">
+                    <h2>Résumé par Type</h2>
+                    <div id="statsTableContainer" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: var(--light); border-bottom: 2px solid var(--border);">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--dark);">Type de Rendez-vous</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; color: var(--dark);">Nombre</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; color: var(--dark);">Pourcentage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statsTableBody">
+                                <!-- Les statistiques seront remplies par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -1308,7 +1400,7 @@
     <div id="aboutModal" class="modal">
         <div class="modal-content" style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); box-shadow: 0 8px 32px rgba(0,201,183,0.18); border: none; position: relative; overflow: visible;">
             <div class="modal-header" style="background: rgba(255,255,255,0.85); border-radius: 16px 16px 0 0; box-shadow: 0 2px 8px rgba(0,201,183,0.08); display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 0; position: relative;">
-                <h2 class="modal-title" style="font-size: 28px; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; letter-spacing: 2px; margin: 0 auto; text-align: center; flex: 1;">À propos</h2>
+                <h2 class="modal-title" style="font-size: 28px; font-weight: 900; background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; letter-spacing: 2px; margin: 0 auto; text-align: center; flex: 1;">ℹ️ A Propos</h2>
                 <button class="modal-close" onclick="closeAboutModal()" style="font-size: 28px; color: var(--accent); background: none; border: none; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);">✕</button>
             </div>
             <div style="padding: 32px 0 24px 0; color: var(--dark); text-align: center; position: relative;">
@@ -1384,8 +1476,1032 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     
     <script>
+        // ===================== MULTILINGUAL SYSTEM ======================
+        const translations = {
+            en: {
+                create: "Create",
+                verify: "Verify",
+                history: "History",
+                about: "About",
+                signout: "Sign Out",
+                createTitle: "Create a Temporary Invitation",
+                fullName: "Full Name",
+                email: "Email",
+                phone: "Phone",
+                sex: "Sex",
+                male: "Male",
+                female: "Female",
+                appointmentType: "Appointment Type",
+                businessAppointment: "Business Appointment",
+                medicalAppointment: "Medical Appointment",
+                eventParticipant: "Event Participant",
+                guest: "Guest",
+                provider: "Provider",
+                gym: "Gym",
+                visitor: "Visitor",
+                accessLocation: "Access Location",
+                service: "Service",
+                capacityLabel: "Number of people per invitation",
+                startDateTime: "Start Date & Time",
+                endDateTime: "End Date & Time",
+                notes: "Leave a note",
+                generateQR: "🎫 Generate Invitation and QR Code",
+                takePhoto: "Take a Visitor Photo",
+                startCamera: "📷 Start Camera",
+                capturePhoto: "📸 Take Photo",
+                stopCamera: "⏹️ Stop Camera",
+                clearPhoto: "🗑️ Clear Photo",
+                qrGenerated: "Generated QR Code",
+                uniqueCode: "Unique code for:",
+                sexLabel: "Sex:",
+                quickCode: "Quick Code (5 digits)",
+                downloadQR: "⬇️ Download",
+                printQR: "🖨️ Print",
+                qrEmptyState: "QR codes will appear here",
+                verifyTitle: "Verify an Invitation",
+                verificationCode: "Verification Code",
+                pasteButton: "📥 Paste",
+                scanButton: "📷 Scan via Camera",
+                verifyButton: "✓ Verify",
+                scannerTitle: "QR Scanner Reading",
+                scannerDesc: "Use a QR scanner to automate verification",
+                historyTitle: "Access History",
+                searchPlaceholder: "Search by name, code, phone, email...",
+                clearButton: "Clear",
+                dailyReport: "📊 Daily Report",
+                aboutTitle: "About",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access offers innovative solutions for access management, QR code generation and verification for events, businesses and organizations.",
+                copyright: "© 2026 QR-Access Manager Solution. All rights reserved.",
+                contactUs: "Contact us:",
+                selectLanguage: "Select Language",
+                modeDay: "☀️ Day Mode",
+                modeNight: "🌙 Night Mode",
+                activeAppointments: "Active Appointments",
+                totalCreated: "Total Created",
+                expiringFoon: "Expiring Soon",
+                statistics: "Statistics",
+                monthlyStatistics: "Monthly Statistics",
+                month: "Month",
+                refresh: "Refresh",
+                summaryByType: "Summary by Type",
+                appointmentType: "Appointment Type",
+                number: "Number",
+                percentage: "Percentage"
+            },
+            zh: {
+                create: "创建",
+                verify: "验证",
+                history: "历史记录",
+                about: "关于",
+                signout: "登出",
+                createTitle: "创建临时邀请",
+                fullName: "全名",
+                email: "电子邮件",
+                phone: "电话",
+                sex: "性别",
+                male: "男性",
+                female: "女性",
+                appointmentType: "约会类型",
+                businessAppointment: "商业约会",
+                medicalAppointment: "医疗约会",
+                eventParticipant: "活动参与者",
+                guest: "嘉宾",
+                provider: "提供者",
+                gym: "健身房",
+                visitor: "访客",
+                accessLocation: "访问位置",
+                service: "服务",
+                capacityLabel: "每次邀请的人数",
+                startDateTime: "开始日期和时间",
+                endDateTime: "结束日期和时间",
+                notes: "留言",
+                generateQR: "🎫 生成邀请和二维码",
+                takePhoto: "拍摄访客照片",
+                startCamera: "📷 启动摄像头",
+                capturePhoto: "📸 拍照",
+                stopCamera: "⏹️ 停止摄像头",
+                clearPhoto: "🗑️ 清除照片",
+                qrGenerated: "生成的二维码",
+                uniqueCode: "唯一代码：",
+                sexLabel: "性别：",
+                quickCode: "快速代码（5位数字）",
+                downloadQR: "⬇️ 下载",
+                printQR: "🖨️ 打印",
+                qrEmptyState: "二维码将在此显示",
+                verifyTitle: "验证邀请",
+                verificationCode: "验证代码",
+                pasteButton: "📥 粘贴",
+                scanButton: "📷 通过摄像头扫描",
+                verifyButton: "✓ 验证",
+                scannerTitle: "二维码扫描器阅读",
+                scannerDesc: "使用二维码扫描器自动验证",
+                historyTitle: "访问历史记录",
+                searchPlaceholder: "按姓名、代码、电话、电子邮件搜索...",
+                clearButton: "清除",
+                dailyReport: "📊 每日报告",
+                aboutTitle: "关于",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access 提供创新的访问管理、二维码生成和验证解决方案，适用于活动、企业和组织。",
+                copyright: "© 2026 QR-Access Manager Solution。版权所有。",
+                contactUs: "联系我们：",
+                selectLanguage: "选择语言",
+                modeDay: "☀️ 日间模式",
+                modeNight: "🌙 夜间模式",
+                activeAppointments: "活动业务",
+                totalCreated: "总计创建",
+                expiringFoon: "即将到期",
+                statistics: "统计",
+                monthlyStatistics: "月度统计",
+                month: "月份",
+                refresh: "刷新",
+                summaryByType: "按类型汇总",
+                appointmentType: "约会类型",
+                number: "数量",
+                percentage: "百分比"
+            },
+            hi: {
+                create: "बनाएं",
+                verify: "सत्यापित करें",
+                history: "इतिहास",
+                about: "परिचय",
+                signout: "साइन आउट",
+                createTitle: "अस्थायी निमंत्रण बनाएं",
+                fullName: "पूरा नाम",
+                email: "ई-मेल",
+                phone: "फोन",
+                sex: "लिंग",
+                male: "पुरुष",
+                female: "महिला",
+                appointmentType: "नियुक्ति प्रकार",
+                businessAppointment: "व्यावसायिक नियुक्ति",
+                medicalAppointment: "चिकित्सा नियुक्ति",
+                eventParticipant: "कार्यक्रम प्रतिभागी",
+                guest: "अतिथि",
+                provider: "प्रदाता",
+                gym: "जिम",
+                visitor: "आगंतुक",
+                accessLocation: "पहुंच स्थान",
+                service: "सेवा",
+                capacityLabel: "प्रति निमंत्रण लोगों की संख्या",
+                startDateTime: "शुरुआत तिथि और समय",
+                endDateTime: "समाप्ति तिथि और समय",
+                notes: "एक नोट छोड़ें",
+                generateQR: "🎫 निमंत्रण और QR कोड जेनरेट करें",
+                takePhoto: "आगंतुक की फोटो लें",
+                startCamera: "📷 कैमरा शुरू करें",
+                capturePhoto: "📸 फोटो लें",
+                stopCamera: "⏹️ कैमरा बंद करें",
+                clearPhoto: "🗑️ फोटो साफ करें",
+                qrGenerated: "जेनरेट किया गया QR कोड",
+                uniqueCode: "अद्वितीय कोड:",
+                sexLabel: "लिंग:",
+                quickCode: "त्वरित कोड (5 अंक)",
+                downloadQR: "⬇️ डाउनलोड",
+                printQR: "🖨️ प्रिंट",
+                qrEmptyState: "QR कोड यहां दिखाई देंगे",
+                verifyTitle: "निमंत्रण सत्यापित करें",
+                verificationCode: "सत्यापन कोड",
+                pasteButton: "📥 पेस्ट करें",
+                scanButton: "📷 कैमरे से स्कैन करें",
+                verifyButton: "✓ सत्यापित करें",
+                scannerTitle: "QR स्कैनर पढ़ना",
+                scannerDesc: "सत्यापन को स्वचालित करने के लिए QR स्कैनर का उपयोग करें",
+                historyTitle: "पहुंच इतिहास",
+                searchPlaceholder: "नाम, कोड, फोन, ई-मेल से खोजें...",
+                clearButton: "साफ करें",
+                dailyReport: "📊 दैनिक रिपोर्ट",
+                aboutTitle: "परिचय",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access कार्यक्रमों, व्यवसायों और संगठनों के लिए पहुंच प्रबंधन, QR कोड जेनरेशन और सत्यापन के लिए नवीन समाधान प्रदान करता है।",
+                copyright: "© 2026 QR-Access Manager Solution। सर्वाधिकार सुरक्षित।",
+                contactUs: "हमसे संपर्क करें:",
+                selectLanguage: "भाषा चुनें",
+                modeDay: "☀️ दिन मोड",
+                modeNight: "🌙 रात मोड",
+                activeAppointments: "सक्रिय नियुक्तियां",
+                totalCreated: "कुल नटे गए",
+                expiringFoon: "शीघ्र सतरक ",
+                statistics: "आंकड़े",
+                monthlyStatistics: "मासिक आंकड़े",
+                month: "महीना",
+                refresh: "ताजा करें",
+                summaryByType: "प्रकार द्वारा सारांश",
+                appointmentType: "नियुक्ति प्रकार",
+                number: "संख्या",
+                percentage: "प्रतिशत"
+            },
+            es: {
+                create: "Crear",
+                verify: "Verificar",
+                history: "Historial",
+                about: "Acerca de",
+                signout: "Cerrar Sesión",
+                createTitle: "Crear una Invitación Temporal",
+                fullName: "Nombre Completo",
+                email: "Correo Electrónico",
+                phone: "Teléfono",
+                sex: "Sexo",
+                male: "Masculino",
+                female: "Femenino",
+                appointmentType: "Tipo de Cita",
+                businessAppointment: "Cita de Negocios",
+                medicalAppointment: "Cita Médica",
+                eventParticipant: "Participante del Evento",
+                guest: "Invitado",
+                provider: "Proveedor",
+                gym: "Gimnasio",
+                visitor: "Visitante",
+                accessLocation: "Ubicación de Acceso",
+                service: "Servicio",
+                capacityLabel: "Número de personas por invitación",
+                startDateTime: "Fecha y Hora de Inicio",
+                endDateTime: "Fecha y Hora de Finalización",
+                notes: "Dejar una nota",
+                generateQR: "🎫 Generar Invitación y Código QR",
+                takePhoto: "Tomar Foto del Visitante",
+                startCamera: "📷 Iniciar Cámara",
+                capturePhoto: "📸 Tomar Foto",
+                stopCamera: "⏹️ Detener Cámara",
+                clearPhoto: "🗑️ Borrar Foto",
+                qrGenerated: "Código QR Generado",
+                uniqueCode: "Código único para:",
+                sexLabel: "Sexo:",
+                quickCode: "Código Rápido (5 dígitos)",
+                downloadQR: "⬇️ Descargar",
+                printQR: "🖨️ Imprimir",
+                qrEmptyState: "Los códigos QR aparecerán aquí",
+                verifyTitle: "Verificar una Invitación",
+                verificationCode: "Código de Verificación",
+                pasteButton: "📥 Pegar",
+                scanButton: "📷 Escanear via Cámara",
+                verifyButton: "✓ Verificar",
+                scannerTitle: "Lectura del Escáner QR",
+                scannerDesc: "Use un escáner QR para automatizar la verificación",
+                historyTitle: "Historial de Acceso",
+                searchPlaceholder: "Buscar por nombre, código, teléfono, correo electrónico...",
+                clearButton: "Borrar",
+                dailyReport: "📊 Informe Diario",
+                aboutTitle: "Acerca de",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access ofrece soluciones innovadoras para la gestión de acceso, generación y verificación de códigos QR para eventos, empresas y organizaciones.",
+                copyright: "© 2026 QR-Access Manager Solution. Todos los derechos reservados.",
+                contactUs: "Contáctenos:",
+                selectLanguage: "Seleccione Idioma",
+                modeDay: "☀️ Modo Día",
+                modeNight: "🌙 Modo Noche",
+                activeAppointments: "Citas Activas",
+                totalCreated: "Total Creado",
+                expiringFoon: "Vencimiento próximo",
+                statistics: "Estadísticas",
+                monthlyStatistics: "Estadísticas Mensuales",
+                month: "Mes",
+                refresh: "Actualizar",
+                summaryByType: "Resumen por Tipo",
+                appointmentType: "Tipo de Cita",
+                number: "Número",
+                percentage: "Porcentaje"
+            },
+            fr: {
+                create: "Créer",
+                verify: "Vérifier",
+                history: "Historique",
+                about: "📈 Statistiques",
+                signout: "Déconnexion",
+                createTitle: "Créer une Invitations Temporaire",
+                fullName: "Nom Complet",
+                email: "Email",
+                phone: "Téléphone",
+                sex: "Sexe",
+                male: "Masculin",
+                female: "Féminin",
+                appointmentType: "Type de Rendez-vous",
+                businessAppointment: "Rendez-vous Entreprise",
+                medicalAppointment: "Rendez-vous Medical",
+                eventParticipant: "Participant Événement",
+                guest: "Invité",
+                provider: "Prestataire",
+                gym: "Salle de sport",
+                visitor: "Visiteur",
+                accessLocation: "Lieu d'Accès",
+                service: "Service",
+                capacityLabel: "Nombre de personnes par invitation",
+                startDateTime: "Date & Heure de Début",
+                endDateTime: "Date & Heure de Fin",
+                notes: "Laisser un mot",
+                generateQR: "🎫 Générer Invitation et QR Code",
+                takePhoto: "Prendre une Photo du Visiteur",
+                startCamera: "📷 Démarrer Caméra",
+                capturePhoto: "📸 Prendre Photo",
+                stopCamera: "⏹️ Arrêter Caméra",
+                clearPhoto: "🗑️ Effacer Photo",
+                qrGenerated: "QR Code Généré",
+                uniqueCode: "Code unique pour:",
+                sexLabel: "Sexe:",
+                quickCode: "Code Rapide (5 chiffres)",
+                downloadQR: "⬇️ Télécharger",
+                printQR: "🖨️ Imprimer",
+                qrEmptyState: "Les codes QR apparaîtront ici",
+                verifyTitle: "Vérifier une Invitation",
+                verificationCode: "Code de Vérification",
+                pasteButton: "📥 Coller",
+                scanButton: "📷 Scanner via caméra",
+                verifyButton: "✓ Vérifier",
+                scannerTitle: "Lecture Scanner QR",
+                scannerDesc: "Utilisez un scanner QR pour automatiser la vérification",
+                historyTitle: "Historique des Accès",
+                searchPlaceholder: "Rechercher par nom, code, téléphone, email...",
+                clearButton: "Effacer",
+                dailyReport: "📊 Bilan Journalier",
+                aboutTitle: "📈 Statistiques",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access propose des solutions innovantes pour la gestion d'accès, la génération et la vérification de QR codes pour événements, entreprises et organisations.",
+                copyright: "© 2026 QR-Access Manager Solution. Tous droits réservés.",
+                contactUs: "Nous contacter :",
+                selectLanguage: "Sélectionner la langue",
+                modeDay: "☀️ Mode jour",
+                modeNight: "🌙 Mode nuit",
+                activeAppointments: "Rendez-vous Actifs",
+                totalCreated: "Total Créés",
+                expiringFoon: "Expirations Proches",
+                statistics: "Statistiques",
+                monthlyStatistics: "Statistiques Mensuelles",
+                month: "Mois",
+                refresh: "Actualiser",
+                summaryByType: "Résumé par Type",
+                appointmentType: "Type de Rendez-vous",
+                number: "Nombre",
+                percentage: "Pourcentage"
+            },
+            ar: {
+                create: "إنشاء",
+                verify: "التحقق",
+                history: "السجل",
+                about: "حول",
+                signout: "تسجيل الخروج",
+                createTitle: "إنشاء دعوة مؤقتة",
+                fullName: "الاسم الكامل",
+                email: "البريد الإلكتروني",
+                phone: "الهاتف",
+                sex: "الجنس",
+                male: "ذكر",
+                female: "أنثى",
+                appointmentType: "نوع الموعد",
+                businessAppointment: "موعد عمل",
+                medicalAppointment: "موعد طبي",
+                eventParticipant: "مشارك الحدث",
+                guest: "ضيف",
+                provider: "مزود الخدمة",
+                gym: "صالة رياضية",
+                visitor: "زائر",
+                accessLocation: "موقع الوصول",
+                service: "الخدمة",
+                capacityLabel: "عدد الأشخاص لكل دعوة",
+                startDateTime: "تاريخ ووقت البداية",
+                endDateTime: "تاريخ ووقت النهاية",
+                notes: "اترك ملاحظة",
+                generateQR: "🎫 إنشاء الدعوة وكود QR",
+                takePhoto: "التقط صورة للزائر",
+                startCamera: "📷 بدء الكاميرا",
+                capturePhoto: "📸 التقط الصورة",
+                stopCamera: "⏹️ إيقاف الكاميرا",
+                clearPhoto: "🗑️ مسح الصورة",
+                qrGenerated: "كود QR المُنشأ",
+                uniqueCode: "الكود الفريد لـ:",
+                sexLabel: "الجنس:",
+                quickCode: "كود سريع (5 أرقام)",
+                downloadQR: "⬇️ تحميل",
+                printQR: "🖨️ طباعة",
+                qrEmptyState: "ستظهر أكواد QR هنا",
+                verifyTitle: "التحقق من دعوة",
+                verificationCode: "كود التحقق",
+                pasteButton: "📥 لصق",
+                scanButton: "📷 مسح عبر الكاميرا",
+                verifyButton: "✓ تحقق",
+                scannerTitle: "قراءة ماسح QR",
+                scannerDesc: "استخدم ماسح QR لأتمتة التحقق",
+                historyTitle: "سجل الوصول",
+                searchPlaceholder: "البحث بالاسم أو الكود أو الهاتف أو البريد الإلكتروني...",
+                clearButton: "مسح",
+                dailyReport: "📊 التقرير اليومي",
+                aboutTitle: "حول",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "يوفر QR-Access حلولاً مبتكرة لإدارة الوصول وإنشاء والتحقق من أكواس QR للأحداث والشركات والمنظمات.",
+                copyright: "© 2026 QR-Access Manager Solution. جميع الحقوق محفوظة.",
+                contactUs: "اتصل بنا:",
+                selectLanguage: "اختر اللغة",
+                modeDay: "☀️ الوضع النهاري",
+                modeNight: "🌙 الوضع الليلي",
+                activeAppointments: "مواعيد طالبة",
+                totalCreated: "إجمالي منشأ",
+                expiringFoon: "الاني قرباً ",
+                statistics: "الإحصائيات",
+                monthlyStatistics: "الإحصائيات الشهرية",
+                month: "شهر",
+                refresh: "تحديث",
+                summaryByType: "الملخص حسب النوع",
+                appointmentType: "نوع الموعد",
+                number: "عدد",
+                percentage: "نسبة مئوية"
+            },
+            pt: {
+                create: "Criar",
+                verify: "Verificar",
+                history: "Histórico",
+                about: "Sobre",
+                signout: "Sair",
+                createTitle: "Criar um Convite Temporário",
+                fullName: "Nome Completo",
+                email: "Email",
+                phone: "Telefone",
+                sex: "Sexo",
+                male: "Masculino",
+                female: "Feminino",
+                appointmentType: "Tipo de Compromisso",
+                businessAppointment: "Compromisso Empresarial",
+                medicalAppointment: "Consulta Médica",
+                eventParticipant: "Participante do Evento",
+                guest: "Convidado",
+                provider: "Prestador de Serviços",
+                gym: "Academia",
+                visitor: "Visitante",
+                accessLocation: "Local de Acesso",
+                service: "Serviço",
+                capacityLabel: "Número de pessoas por convite",
+                startDateTime: "Data e Hora de Início",
+                endDateTime: "Data e Hora de Fim",
+                notes: "Deixe uma mensagem",
+                generateQR: "🎫 Gerar Convite e Código QR",
+                takePhoto: "Tirar Foto do Visitante",
+                startCamera: "📷 Iniciar Câmera",
+                capturePhoto: "📸 Tirar Foto",
+                stopCamera: "⏹️ Parar Câmera",
+                clearPhoto: "🗑️ Limpar Foto",
+                qrGenerated: "Código QR Gerado",
+                uniqueCode: "Código único para:",
+                sexLabel: "Sexo:",
+                quickCode: "Código Rápido (5 dígitos)",
+                downloadQR: "⬇️ Baixar",
+                printQR: "🖨️ Imprimir",
+                qrEmptyState: "Os códigos QR aparecerão aqui",
+                verifyTitle: "Verificar um Convite",
+                verificationCode: "Código de Verificação",
+                pasteButton: "📥 Colar",
+                scanButton: "📷 Escanear via Câmera",
+                verifyButton: "✓ Verificar",
+                scannerTitle: "Leitura do Leitor QR",
+                scannerDesc: "Use um leitor QR para automatizar a verificação",
+                historyTitle: "Histórico de Acesso",
+                searchPlaceholder: "Pesquisar por nome, código, telefone, email...",
+                clearButton: "Limpar",
+                dailyReport: "📊 Relatório Diário",
+                aboutTitle: "Sobre",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "O QR-Access oferece soluções inovadoras para gerenciamento de acesso, geração e verificação de códigos QR para eventos, empresas e organizações.",
+                copyright: "© 2026 QR-Access Manager Solution. Todos os direitos reservados.",
+                contactUs: "Entre em contato:",
+                selectLanguage: "Selecione o Idioma",
+                modeDay: "☀️ Modo Dia",
+                modeNight: "🌙 Modo Noite",
+                activeAppointments: "Compromissos Ativos",
+                totalCreated: "Total Criado",
+                expiringFoon: "Vencimento próximo",
+                statistics: "Estatísticas",
+                monthlyStatistics: "Estatísticas Mensais",
+                month: "Mês",
+                refresh: "Atualizar",
+                summaryByType: "Resumo por Tipo",
+                appointmentType: "Tipo de Compromisso",
+                number: "Número",
+                percentage: "Porcentagem"
+            },
+            ru: {
+                create: "Создать",
+                verify: "Проверить",
+                history: "История",
+                about: "О нас",
+                signout: "Выход",
+                createTitle: "Создатьвременное приглашение",
+                fullName: "Полное имя",
+                email: "Электронная почта",
+                phone: "Телефон",
+                sex: "Пол",
+                male: "Мужчина",
+                female: "Женщина",
+                appointmentType: "Тип встречи",
+                businessAppointment: "Деловая встреча",
+                medicalAppointment: "Медицинский осмотр",
+                eventParticipant: "Участник события",
+                guest: "Гость",
+                provider: "Поставщик услуг",
+                gym: "Спортзал",
+                visitor: "Посетитель",
+                accessLocation: "Место доступа",
+                service: "Служба",
+                capacityLabel: "Количество людей на приглашение",
+                startDateTime: "Дата и время начала",
+                endDateTime: "Дата и время окончания",
+                notes: "Оставить заметку",
+                generateQR: "🎫 Создать приглашение и QR-код",
+                takePhoto: "Сфотографировать посетителя",
+                startCamera: "📷 Запустить камеру",
+                capturePhoto: "📸 Сделать снимок",
+                stopCamera: "⏹️ Остановить камеру",
+                clearPhoto: "🗑️ Очистить фото",
+                qrGenerated: "Созданный QR-код",
+                uniqueCode: "Уникальный код для:",
+                sexLabel: "Пол:",
+                quickCode: "Быстрый код (5 цифр)",
+                downloadQR: "⬇️ Скачать",
+                printQR: "🖨️ Печать",
+                qrEmptyState: "QR-коды появятся здесь",
+                verifyTitle: "Проверить приглашение",
+                verificationCode: "Код проверки",
+                pasteButton: "📥 Вставить",
+                scanButton: "📷 Отсканировать камерой",
+                verifyButton: "✓ Проверить",
+                scannerTitle: "Чтение QR-сканера",
+                scannerDesc: "Используйте QR-сканер для автоматизации проверки",
+                historyTitle: "История доступа",
+                searchPlaceholder: "Поиск по имени, коду, телефону, электронной почте...",
+                clearButton: "Очистить",
+                dailyReport: "📊 Ежедневный отчет",
+                aboutTitle: "О нас",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access предлагает инновационные решения для управления доступом, создания и проверки QR-кодов для событий, компаний и организаций.",
+                copyright: "© 2026 QR-Access Manager Solution. Все права защищены.",
+                contactUs: "Свяжитесь с нами:",
+                selectLanguage: "Выберите язык",
+                modeDay: "☀️ Дневной режим",
+                modeNight: "🌙 Ночной режим",
+                activeAppointments: "Активные встречи",
+                totalCreated: "Всего создано",
+                expiringFoon: "При выкора в скорем",
+                statistics: "Статистика",
+                monthlyStatistics: "Ежемесячная статистика",
+                month: "Месяц",
+                refresh: "Обновить",
+                summaryByType: "Резюме по типу",
+                appointmentType: "Тип встречи",
+                number: "Число",
+                percentage: "Процент"
+            },
+            ja: {
+                create: "作成",
+                verify: "確認",
+                history: "履歴",
+                about: "について",
+                signout: "ログアウト",
+                createTitle: "一時招待状を作成",
+                fullName: "フルネーム",
+                email: "メール",
+                phone: "電話",
+                sex: "性別",
+                male: "男性",
+                female: "女性",
+                appointmentType: "予約タイプ",
+                businessAppointment: "ビジネス予約",
+                medicalAppointment: "医学予約",
+                eventParticipant: "イベント参加者",
+                guest: "ゲスト",
+                provider: "プロバイダー",
+                gym: "ジム",
+                visitor: "訪問者",
+                accessLocation: "アクセス位置",
+                service: "サービス",
+                capacityLabel: "招待あたりの人数",
+                startDateTime: "開始日時",
+                endDateTime: "終了日時",
+                notes: "メッセージを残す",
+                generateQR: "🎫 招待状とQRコードを生成",
+                takePhoto: "訪問者の写真を撮る",
+                startCamera: "📷 カメラを起動",
+                capturePhoto: "📸 写真を撮る",
+                stopCamera: "⏹️ カメラを停止",
+                clearPhoto: "🗑️ 写真をクリア",
+                qrGenerated: "生成されたQRコード",
+                uniqueCode: "一意のコード：",
+                sexLabel: "性別：",
+                quickCode: "クイックコード（5桁）",
+                downloadQR: "⬇️ ダウンロード",
+                printQR: "🖨️ 印刷",
+                qrEmptyState: "QRコードがここに表示されます",
+                verifyTitle: "招待状を確認",
+                verificationCode: "確認コード",
+                pasteButton: "📥 貼り付け",
+                scanButton: "📷 カメラでスキャン",
+                verifyButton: "✓ 確認",
+                scannerTitle: "QRスキャナーの読み取り",
+                scannerDesc: "QRスキャナーを使用して確認を自動化",
+                historyTitle: "アクセス履歴",
+                searchPlaceholder: "名前、コード、電話、メールで検索...",
+                clearButton: "クリア",
+                dailyReport: "📊 日報",
+                aboutTitle: "について",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Accessは、イベント、ビジネス、組織のためのアクセス管理、QRコード生成および検証のための革新的なソリューションを提供します。",
+                copyright: "© 2026 QR-Access Manager Solution。著作権所有。",
+                contactUs: "お問い合わせ：",
+                selectLanguage: "言語を選択",
+                modeDay: "☀️ 昼間モード",
+                modeNight: "🌙 夜間モード",
+                activeAppointments: "アクティブな予約",
+                totalCreated: "総作成",
+                expiringFoon: "騒原を控えるべき",
+                statistics: "統計",
+                monthlyStatistics: "月次統計",
+                month: "月",
+                refresh: "更新",
+                summaryByType: "タイプ別サマリー",
+                appointmentType: "予約のタイプ",
+                number: "番号",
+                percentage: "パーセンテージ"
+            },
+            de: {
+                create: "Erstellen",
+                verify: "Überprüfen",
+                history: "Verlauf",
+                about: "Über",
+                signout: "Abmelden",
+                createTitle: "Erstellen Sie eine temporäre Einladung",
+                fullName: "Vollständiger Name",
+                email: "E-Mail",
+                phone: "Telefon",
+                sex: "Geschlecht",
+                male: "Männlich",
+                female: "Weiblich",
+                appointmentType: "Termintyp",
+                businessAppointment: "Geschäftstermin",
+                medicalAppointment: "Arzttermin",
+                eventParticipant: "Veranstaltungsteilnehmer",
+                guest: "Gast",
+                provider: "Anbieter",
+                gym: "Fitnessstudio",
+                visitor: "Besucher",
+                accessLocation: "Zugriffspunkt",
+                service: "Service",
+                capacityLabel: "Anzahl der Personen pro Einladung",
+                startDateTime: "Startdatum und Uhrzeit",
+                endDateTime: "Enddatum und Uhrzeit",
+                notes: "Eine Nachricht hinterlassen",
+                generateQR: "🎫 Einladung und QR-Code generieren",
+                takePhoto: "Besucherfoto aufnehmen",
+                startCamera: "📷 Kamera starten",
+                capturePhoto: "📸 Foto aufnehmen",
+                stopCamera: "⏹️ Kamera stoppen",
+                clearPhoto: "🗑️ Foto löschen",
+                qrGenerated: "Generierter QR-Code",
+                uniqueCode: "Eindeutiger Code für:",
+                sexLabel: "Geschlecht:",
+                quickCode: "Schnellcode (5 Ziffern)",
+                downloadQR: "⬇️ Herunterladen",
+                printQR: "🖨️ Drucken",
+                qrEmptyState: "QR-Codes werden hier angezeigt",
+                verifyTitle: "Eine Einladung überprüfen",
+                verificationCode: "Bestätigungscode",
+                pasteButton: "📥 Einfügen",
+                scanButton: "📷 Per Kamera scannen",
+                verifyButton: "✓ Überprüfen",
+                scannerTitle: "QR-Scanner-Erfassung",
+                scannerDesc: "Verwenden Sie einen QR-Scanner zur Automatisierung der Überprüfung",
+                historyTitle: "Zugriffsverlauf",
+                searchPlaceholder: "Nach Name, Code, Telefon, E-Mail suchen...",
+                clearButton: "Löschen",
+                dailyReport: "📊 Tagesbericht",
+                aboutTitle: "Über",
+                contactEmail: "qraccess@gmail.com",
+                aboutDesc: "QR-Access bietet innovative Lösungen für Zugriffsverwaltung, QR-Code-Generierung und -Überprüfung für Veranstaltungen, Unternehmen und Organisationen.",
+                copyright: "© 2026 QR-Access Manager Solution. Alle Rechte vorbehalten.",
+                contactUs: "Kontaktieren Sie uns:",
+                selectLanguage: "Sprache wählen",
+                modeDay: "☀️ Tagmodus",
+                modeNight: "🌙 Nachtmodus",
+                activeAppointments: "Aktive Termine",
+                totalCreated: "Insgesamt erstellt",
+                expiringFoon: "Künftig ablaufen",
+                statistics: "Statistik",
+                monthlyStatistics: "Monatliche Statistik",
+                month: "Monat",
+                refresh: "Aktualisieren",
+                summaryByType: "Zusammenfassung nach Typ",
+                appointmentType: "Art des Termins",
+                number: "Anzahl",
+                percentage: "Prozentsatz"
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'fr';
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            applyTranslations();
+        }
+
+        function t(key) {
+            return translations[currentLanguage][key] || translations['fr'][key] || key;
+        }
+
+        function applyTranslations() {
+            // Update all labels based on input IDs
+            const labelInputMap = {
+                'visitorName': 'fullName',
+                'visitorEmail': 'email',
+                'visitorPhone': 'phone',
+                'visitorSex': 'sex',
+                'visitorType': 'appointmentType',
+                'visitorLocation': 'accessLocation',
+                'visitorService': 'service',
+                'visitorCapacity': 'capacityLabel',
+                'startDateTime': 'startDateTime',
+                'endDateTime': 'endDateTime',
+                'visitorNotes': 'notes',
+                'verifyCode': 'verificationCode',
+                'historySearch': 'searchPlaceholder',
+            };
+
+            // Update labels
+            Object.entries(labelInputMap).forEach(([inputId, translationKey]) => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    // Find associated label
+                    const label = document.querySelector(`label[for="${inputId}"]`);
+                    if (label) {
+                        label.textContent = t(translationKey);
+                    }
+                    // Update input placeholder if applicable
+                    if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+                        if (translationKey === 'capacityLabel') {
+                            input.placeholder = t('capacityLabel');
+                        } else if (translationKey !== 'phone' && translationKey !== 'sex' && translationKey !== 'appointmentType') {
+                            input.placeholder = t(translationKey);
+                        }
+                    }
+                }
+            });
+
+            // Update nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const tabLabels = [
+                { emoji: '📊', key: 'dashboard' },
+                { emoji: '➕', key: 'create' },
+                { emoji: '✓', key: 'verify' },
+                { emoji: '📜', key: 'history' },
+                { emoji: 'ℹ️', key: 'about' }
+            ];
+            navTabs.forEach((tab, index) => {
+                if (index < tabLabels.length) {
+                    tab.textContent = tabLabels[index].emoji + ' ' + t(tabLabels[index].key);
+                }
+            });
+
+            // Update stat labels
+            const statLabels = document.querySelectorAll('.stat-label');
+            statLabels.forEach((label, idx) => {
+                const text = label.textContent.trim();
+                if (text.includes('Rendez-vous Actifs') || text.includes('Active Appointments') || 
+                    text.includes('活跃业务') || text.includes('सक्रिय नियुक्तियां') || 
+                    text.includes('Citas Activas') || text.includes('مواعيد طالبة') || 
+                    text.includes('Compromissos Ativos') || text.includes('Активные встречи') || 
+                    text.includes('アクティブな予約') || text.includes('Aktive Termine')) {
+                    label.textContent = t('activeAppointments');
+                } else if (text.includes('Total Créés') || text.includes('Total Created') || 
+                    text.includes('总计创建') || text.includes('कुल नटे गए') || 
+                    text.includes('Total Creado') || text.includes('إجمالي منشأ') || 
+                    text.includes('Total Criado') || text.includes('Всего создано') || 
+                    text.includes('総作成') || text.includes('Insgesamt erstellt')) {
+                    label.textContent = t('totalCreated');
+                } else if (text.includes('Expirations Proches') || text.includes('Expiring Soon') || 
+                    text.includes('即将到期') || text.includes('शीघ्र सतरक') || 
+                    text.includes('Vencimiento próximo') || text.includes('الاني قرباً') || 
+                    text.includes('Vencimento próximo') || text.includes('При выкора в скореме') || 
+                    text.includes('警原を控えるべき') || text.includes('Künftig ablaufen')) {
+                    label.textContent = t('expiringFoon');
+                }
+            });
+
+            // Update all h2 titles in cards using smarter matching
+            const h2Elements = document.querySelectorAll('h2');
+            h2Elements.forEach(h2 => {
+                const text = h2.textContent.trim();
+                
+                if (text.includes('Créer une Invitations')) {
+                    h2.textContent = t('createTitle');
+                } else if (text.includes('QR Code Généré')) {
+                    h2.textContent = t('qrGenerated');
+                } else if (text.includes('Vérifier une Invitation')) {
+                    h2.textContent = t('verifyTitle');
+                } else if (text.includes('Lecture Scanner') || text.includes('QR')) {
+                    h2.textContent = t('scannerTitle');
+                } else if (text.includes('Historique des Accès')) {
+                    h2.textContent = t('historyTitle');
+                } else if (text.includes('Alertes')) {
+                    h2.textContent = 'Alertes et Expirations'; // Dashboard section
+                } else if (text.includes('Total Actifs')) {
+                    h2.textContent = 'Total Actifs'; // Dashboard section
+                } else if (text === '📈 Statistiques') {
+                    h2.textContent = t('aboutTitle');
+                }
+            });
+
+            // Update h3 for camera section
+            const h3Elements = document.querySelectorAll('h3');
+            h3Elements.forEach(h3 => {
+                const text = h3.textContent.trim();
+                if (text.includes('Prendre une Photo')) {
+                    h3.textContent = t('takePhoto');
+                }
+            });
+
+            // Update camera status text
+            const cameraStatus = document.getElementById('cameraStatus');
+            if (cameraStatus) {
+                if (cameraStatus.textContent.includes('Prêt à capturer') || cameraStatus.textContent.includes('Caméra active')) {
+                    cameraStatus.textContent = t('takePhoto');
+                }
+            }
+
+            // Update buttons with specific IDs
+            const buttonMap = [
+                { id: 'startCameraBtn', key: 'startCamera', emoji: '📷' },
+                { id: 'capturePhotoBtn', key: 'capturePhoto', emoji: '📸' },
+                { id: 'stopCameraBtn', key: 'stopCamera', emoji: '⏹️' },
+                { id: 'clearPhotoBtn', key: 'clearPhoto', emoji: '🗑️' },
+                { id: 'pasteVerifyBtn', key: 'pasteButton', emoji: '📥' },
+                { selector: 'button[onclick="downloadQR()"]', key: 'downloadQR', emoji: '⬇️' },
+                { selector: 'button[onclick="printQR()"]', key: 'printQR', emoji: '🖨️' },
+                { selector: 'button[onclick="showDailyReport()"]', key: 'dailyReport', emoji: '📊' },
+                { selector: 'button[onclick="verifyCode()"]', key: 'verifyButton', emoji: '✓' },
+            ];
+
+            buttonMap.forEach(item => {
+                let btn = null;
+                if (item.id) {
+                    btn = document.getElementById(item.id);
+                } else if (item.selector) {
+                    btn = document.querySelector(item.selector);
+                }
+                if (btn) {
+                    const emoji = btn.textContent.match(/[📲📸🖨️⬇️✓📥🗑️⏹️📷]/)?.[0] || item.emoji || '';
+                    const text = t(item.key);
+                    btn.textContent = (emoji ? emoji + ' ' : '') + text;
+                }
+            });
+
+            // Update create form submit button
+            const createForm = document.getElementById('createForm');
+            if (createForm) {
+                const submitBtn = createForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const emoji = submitBtn.textContent.match(/🎫/)?.[0] || '🎫';
+                    submitBtn.textContent = emoji + ' ' + t('generateQR');
+                }
+            }
+
+            // Update QR section with preserved strong tags
+            const qrTexts = document.querySelectorAll('.qr-text');
+            qrTexts.forEach((p, idx) => {
+                const text = p.textContent.trim();
+                if (text.includes('Code unique')) {
+                    const nameElement = p.querySelector('#qrVisitorName');
+                    p.textContent = t('uniqueCode') + ': ';
+                    if (nameElement) {
+                        p.appendChild(nameElement);
+                    }
+                } else if (text.includes('Sexe')) {
+                    const sexElement = p.querySelector('#qrVisitorSex');
+                    p.textContent = t('sexLabel') + ' ';
+                    if (sexElement) {
+                        p.appendChild(sexElement);
+                    }
+                }
+            });
+
+            // Update quick code label
+            const allP = document.querySelectorAll('p');
+            allP.forEach(p => {
+                const text = p.textContent.trim();
+                if (text.includes('Code Rapide') || text === '5 chiffres') {
+                    p.textContent = t('quickCode');
+                } else if (text.includes('Utilisez un scanner') || text.includes('automatiser')) {
+                    p.textContent = t('scannerDesc');
+                }
+            });
+
+            // Update clear button and history  
+            const clearBtn = document.getElementById('historyClearBtn');
+            if (clearBtn && clearBtn.textContent.includes('Effacer')) {
+                clearBtn.textContent = t('clearButton');
+            }
+
+            // Update select options
+            const sexSelect = document.getElementById('visitorSex');
+            if (sexSelect) {
+                const options = sexSelect.querySelectorAll('option');
+                options.forEach((opt, idx) => {
+                    const optText = opt.textContent.trim();
+                    if (optText.includes('Sélectionner') || optText.includes('Select')) {
+                        opt.textContent = '-- ' + t('male').split(' ')[0] + ' --';
+                    } else if (optText.includes('Masculin')) {
+                        opt.textContent = t('male');
+                    } else if (optText.includes('Féminin')) {
+                        opt.textContent = t('female');
+                    }
+                });
+            }
+
+            const typeSelect = document.getElementById('visitorType');
+            if (typeSelect) {
+                const options = typeSelect.querySelectorAll('option');
+                const optionMap = {
+                    'Rendez-vous Entreprise': 'businessAppointment',
+                    'Rendez-vous Medical': 'medicalAppointment',
+                    'Participant Événement': 'eventParticipant',
+                    'Invité': 'guest',
+                    'Prestataire': 'provider',
+                    'Salle de sport': 'gym',
+                    'Visiteur': 'visitor'
+                };
+                
+                options.forEach((opt, idx) => {
+                    const optValue = opt.value.trim();
+                    if (optValue === '' || idx === 0) {
+                        opt.textContent = '-- ' + t('male').split(' ')[0] + ' --';
+                    } else if (optionMap[optValue]) {
+                        opt.textContent = t(optionMap[optValue]);
+                    }
+                });
+            }
+
+            // Update language selector
+            const langSelector = document.getElementById('languageSelector');
+            if (langSelector) langSelector.value = currentLanguage;
+
+            // Update theme button text based on current language
+            updateThemeButton();
+
+            // Update statistics section
+            const statisticsDiv = document.getElementById('statistics');
+            if (statisticsDiv) {
+                // Update h2 titles
+                const h2Elements = statisticsDiv.querySelectorAll('h2');
+                h2Elements.forEach((h2, idx) => {
+                    if (idx === 0) {
+                        // Monthly statistics title with emoji
+                        h2.textContent = '📈 ' + t('monthlyStatistics');
+                    } else if (idx === 1) {
+                        // Summary by type title
+                        h2.textContent = t('summaryByType');
+                    }
+                });
+
+                // Update month label
+                const monthLabel = statisticsDiv.querySelector('label[for="statsMonthYear"]');
+                if (monthLabel) {
+                    monthLabel.textContent = t('month') + ':';
+                }
+
+                // Update refresh button
+                const refreshBtn = statisticsDiv.querySelector('button[onclick="updateStatisticsChart()"]');
+                if (refreshBtn) {
+                    refreshBtn.textContent = t('refresh');
+                }
+
+                // Update statistics table headers
+                const statsTable = statisticsDiv.querySelector('table');
+                if (statsTable) {
+                    const ths = statsTable.querySelectorAll('thead th');
+                    if (ths.length >= 3) {
+                        ths[0].textContent = t('appointmentType');
+                        ths[1].textContent = t('number');
+                        ths[2].textContent = t('percentage');
+                    }
+                }
+
+                // Redraw statistics chart and table with updated translations
+                updateStatisticsChart();
+            }
+        }
+
+
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            applyTranslations();
+            
+            // Initialize statistics month input to current month
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const statsMonthInput = document.getElementById('statsMonthYear');
+            if (statsMonthInput) {
+                statsMonthInput.value = `${year}-${month}`;
+            }
+        });
+
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB2ciyWCpKGDjUtAyTrohG8H0OI6x8XR70",
@@ -1697,6 +2813,7 @@
         let ceremonyFacing = 'user';
         let visitorStreamActive = false;
         let ceremonyStreamActive = false;
+        let visitorsExpandedState = false; // Pour tracker l'état du déploiement des visiteurs
 
         // Initialiser
         document.addEventListener('DOMContentLoaded', function() {
@@ -1794,6 +2911,10 @@
             // Actualiser les donnees si on retourne au dashboard ou a l'historique
             if (tabName === 'dashboard') updateDashboard();
             if (tabName === 'history') updateAccessLog();
+            if (tabName === 'statistics') updateStatisticsChart();
+            
+            // Apply translations for the new tab
+            applyTranslations();
         }
 
 
@@ -3218,9 +4339,49 @@
             // conserver le calcul des cérémonies (pour usage interne si besoin)
             // document.getElementById('ceremonyCount').textContent = ceremonyCount;
 
-            document.getElementById('visitorsActive').innerHTML = activeHtml.length ? activeHtml.join('') : '<p style="text-align: center; color: var(--dark); opacity: 0.5;">Aucun rendez-vous actif</p>';
+            // Réinitialiser l'état du déploiement
+            visitorsExpandedState = false;
+
+            // Séparer les rendez-vous actifs : 3 premiers visibles, autres cachés
+            const visibleCount = 3;
+            const visibleActiveHtml = activeHtml.slice(0, visibleCount);
+            const hiddenActiveHtml = activeHtml.slice(visibleCount);
+
+            // Afficher les 3 premiers rendez-vous
+            document.getElementById('visitorsActive').innerHTML = visibleActiveHtml.length ? visibleActiveHtml.join('') : '<p style="text-align: center; color: var(--dark); opacity: 0.5;">Aucun rendez-vous actif</p>';
+            
+            // Afficher les rendez-vous cachés (initialement masqués)
+            document.getElementById('visitorsActiveHidden').innerHTML = hiddenActiveHtml.join('');
+            document.getElementById('visitorsActiveHidden').style.display = 'none'; // Assurer qu'il est bien caché
+            
+            // Afficher/masquer le bouton déplier selon le nombre de rendez-vous
+            const toggleBtn = document.getElementById('toggleVisitorsBtn');
+            if (toggleBtn) {
+                toggleBtn.style.display = activeHtml.length > visibleCount ? 'inline-block' : 'none';
+                toggleBtn.textContent = '📂 Déplier';
+            }
+
             document.getElementById('visitorsExpiring').innerHTML = expiringHtml.length ? expiringHtml.join('') : '<p style="text-align: center; color: var(--dark); opacity: 0.5;">Aucune expiration proche</p>';
         }
+
+        // Fonction pour déplie/replier la liste des visiteurs actifs
+        function toggleVisitorsExpand() {
+            const hiddenDiv = document.getElementById('visitorsActiveHidden');
+            const toggleBtn = document.getElementById('toggleVisitorsBtn');
+
+            if (visitorsExpandedState) {
+                // Replier
+                hiddenDiv.style.display = 'none';
+                toggleBtn.textContent = '📂 Déplier';
+                visitorsExpandedState = false;
+            } else {
+                // Déplier
+                hiddenDiv.style.display = 'block';
+                toggleBtn.textContent = '📁 Replier';
+                visitorsExpandedState = true;
+            }
+        }
+        
 
         // Creer le HTML pour un visiteur dans les listes Actifs et Expirants
         function createVisitorHTML(visitor, isExpiring) {
@@ -3289,6 +4450,124 @@ Scans: ${visitor.scans.length}
 Photo: ${visitor.photo ? 'Oui' : 'Non'}
 Sexe: ${visitor.sexe || 'N/A'}
             `);
+        }
+
+        // ===================== STATISTICS FUNCTIONS ======================
+        let appointmentChartInstance = null;
+
+        // Mapping between French appointment type names and translation keys
+        const appointmentTypeMap = {
+            'Rendez-vous Entreprise': 'businessAppointment',
+            'Rendez-vous Medical': 'medicalAppointment',
+            'Participant Événement': 'eventParticipant',
+            'Invité': 'guest',
+            'Prestataire': 'provider',
+            'Salle de sport': 'gym',
+            'Visiteur': 'visitor'
+        };
+
+        // Translate appointment type name based on current language
+        function translateAppointmentType(typeName) {
+            const translationKey = appointmentTypeMap[typeName];
+            return translationKey ? t(translationKey) : typeName;
+        }
+
+        function updateStatisticsChart() {
+            const monthInput = document.getElementById('statsMonthYear');
+            const selectedMonth = new Date(monthInput.value);
+            const year = selectedMonth.getFullYear();
+            const month = selectedMonth.getMonth();
+
+            const stats = generateAppointmentStats(month, year);
+            displayChart(stats);
+            displayStatsTable(stats);
+        }
+
+        function generateAppointmentStats(month, year) {
+            const typeStats = {};
+            const appointmentTypes = [
+                'Rendez-vous Entreprise', 'Rendez-vous Medical', 'Participant Événement',
+                'Invité', 'Prestataire', 'Salle de sport', 'Visiteur'
+            ];
+
+            // Initialize all types with count 0
+            appointmentTypes.forEach(type => {
+                typeStats[type] = 0;
+            });
+
+            // Count appointments by type for the selected month
+            visitors.forEach(visitor => {
+                const visitDate = visitor.startTime instanceof Date ? visitor.startTime : new Date(visitor.startTime);
+                if (visitDate.getFullYear() === year && visitDate.getMonth() === month) {
+                    const type = visitor.type || 'Visiteur';
+                    if (!typeStats[type]) typeStats[type] = 0;
+                    typeStats[type]++;
+                }
+            });
+
+            return typeStats;
+        }
+
+        function displayChart(stats) {
+            const ctx = document.getElementById('appointmentChart').getContext('2d');
+            const labels = Object.keys(stats).map(type => translateAppointmentType(type));
+            const data = Object.values(stats);
+            const colors = [
+                '#00c9b7', '#ffb347', '#ff6f61', '#43e97b', '#ff3a3a', '#ffd166', '#6366f1'
+            ];
+
+            if (appointmentChartInstance) {
+                appointmentChartInstance.destroy();
+            }
+
+            appointmentChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: t('monthlyStatistics'),
+                        data: data,
+                        backgroundColor: colors.slice(0, data.length),
+                        borderColor: colors.slice(0, data.length),
+                        borderWidth: 1,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: 'var(--dark)' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: 'var(--dark)' },
+                            grid: { color: 'var(--border)' }
+                        },
+                        x: {
+                            ticks: { color: 'var(--dark)' },
+                            grid: { color: 'var(--border)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function displayStatsTable(stats) {
+            const tableBody = document.getElementById('statsTableBody');
+            const total = Object.values(stats).reduce((sum, val) => sum + val, 0) || 1;
+            
+            tableBody.innerHTML = Object.entries(stats).map(([type, count]) => `
+                <tr style="border-bottom: 1px solid var(--border);">
+                    <td style="padding: 12px; color: var(--dark);">${translateAppointmentType(type)}</td>
+                    <td style="padding: 12px; text-align: center; color: var(--dark); font-weight: 600;">${count}</td>
+                    <td style="padding: 12px; text-align: center; color: var(--dark);">${((count / total) * 100).toFixed(1)}%</td>
+                </tr>
+            `).join('');
         }
 
         // Mise a jour du journal d'accès
@@ -3829,9 +5108,9 @@ Sexe: ${visitor.sexe || 'N/A'}
             const btn = document.getElementById('themeToggleBtn');
             if (!btn) return;
             if (document.body.classList.contains('dark-theme')) {
-                btn.textContent = '☀️ Mode jour';
+                btn.textContent = t('modeDay');
             } else {
-                btn.textContent = '🌙 Mode nuit';
+                btn.textContent = t('modeNight');
             }
         }
 
@@ -3841,6 +5120,26 @@ Sexe: ${visitor.sexe || 'N/A'}
             updateThemeButton();
         }
 
+        // ===================== BACK TO TOP BUTTON ======================
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Afficher/masquer le bouton Back to Top selon la position du scroll
+        window.addEventListener('scroll', function() {
+            const backToTopBtn = document.getElementById('backToTopBtn');
+            if (backToTopBtn) {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.style.display = 'flex';
+                } else {
+                    backToTopBtn.style.display = 'none';
+                }
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('themeMode');
             if (savedTheme === 'dark') {
@@ -3849,5 +5148,9 @@ Sexe: ${visitor.sexe || 'N/A'}
             updateThemeButton();
         });
     </script>
+
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" onclick="scrollToTop()" title="Retourner au début">↑</button>
+
 </body>
 </html>
