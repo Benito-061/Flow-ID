@@ -1799,7 +1799,6 @@
 
         // Fonction de la camera pour la capture de photo du visiteur
         function startCamera() {
-            if (!requireAuth()) return;
             const video = document.getElementById('videoCapture');
             const startBtn = document.getElementById('startCameraBtn');
             const captureBtn = document.getElementById('capturePhotoBtn');
@@ -1879,7 +1878,6 @@
 
                 // Camera pour la cérémonie
                 function startCameraCer() {
-                    if (!requireAuth()) return;
                     const video = document.getElementById('videoCaptureCer');
                     const startBtn = document.getElementById('startCameraBtnCer');
                     const captureBtn = document.getElementById('capturePhotoBtnCer');
