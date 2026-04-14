@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> QR Access </title>
+    <script>
+        // Appliquer le thème sombre immédiatement au chargement pour éviter le flash
+        (function() {
+            const savedTheme = localStorage.getItem('themeMode') || 'dark';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme-pending');
+            }
+        })();
+    </script>
+    <style>
+        html.dark-theme-pending {
+            background: #0f172a;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
@@ -35,6 +49,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.1s ease-in-out;
         }
 
         /* Animations */
@@ -98,12 +113,89 @@
             50% { transform: scale(1.05); background-color: #ff6b6b; }
         }
 
+        /* Animations fluides modernes */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 0 rgba(0, 201, 183, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 201, 183, 0.6);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-5deg) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
         /* Container principal */
         .container {
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             padding: 40px 20px;
+        }
+
+        /* Transitions fluides universelles */
+        * {
+            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input, select, textarea {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Header */
@@ -114,8 +206,13 @@
             padding: 25px;
             margin-bottom: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.6s ease-out;
+            animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header:hover {
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
         }
 
         .header-content {
@@ -210,12 +307,26 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             color: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .nav-tab:hover {
-            background: var(--light);
+            background: rgba(99, 102, 241, 0.05);
             transform: translateY(-2px);
         }
 
@@ -224,6 +335,10 @@
             color: white;
             border-color: var(--primary);
             box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-tab.active::after {
+            transform: translateX(0);
         }
 
         /* Alerte et notifications */
@@ -317,13 +432,15 @@
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            /* animation supprimée */
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, box-shadow;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
         }
 
         .card h2 {
@@ -365,7 +482,7 @@
             border: 2px solid var(--border);
             border-radius: 12px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-family: inherit;
             background: var(--light);
         }
@@ -374,7 +491,7 @@
             outline: none;
             border-color: var(--primary);
             background: white;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), inset 0 0 0 1px rgba(99, 102, 241, 0.05);
             transform: translateY(-2px);
         }
 
@@ -391,11 +508,12 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn::before {
@@ -406,7 +524,7 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.2);
-            transition: left 0.3s ease;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn:hover::before {
@@ -420,8 +538,12 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
         }
 
         .btn-secondary {
@@ -431,8 +553,12 @@
         }
 
         .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(236, 72, 153, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(236, 72, 153, 0.5);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-1px) scale(0.98);
         }
 
         .btn-success {
@@ -442,8 +568,8 @@
         }
 
         .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(16, 185, 129, 0.5);
         }
 
         .btn-danger {
@@ -453,8 +579,8 @@
         }
 
         .btn-danger:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(239, 68, 68, 0.5);
         }
 
         .btn-small {
@@ -473,20 +599,36 @@
             gap: 15px;
             margin-top: 20px;
             border: 2px dashed var(--border);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 0;
             overflow: hidden;
             opacity: 0;
+            will-change: max-height, opacity, transform;
         }
 
         .qr-container.visible {
             max-height: 1000px;
             opacity: 1;
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .qr-container:hover {
             border-color: var(--primary);
             background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 100%);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* Animations rapides */
+        .fast-transition * {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Optimisations pour rendered fluide */
+        .animated-element {
+            will-change: transform, opacity, box-shadow;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         #qrEmptyState, #qrCerEmptyState {
@@ -551,7 +693,14 @@
             padding: 20px;
             margin-top: 20px;
             border: 2px dashed var(--border);
-            animation: fadeIn 0.5s ease-out;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .camera-section:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+            background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 100%);
         }
 
         .camera-section h3 {
@@ -618,19 +767,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
-            animation: slideInRight 0.5s ease-out;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             gap: 15px;
         }
 
         .visitor-item:hover {
             border-color: var(--primary);
-            transform: translateX(5px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+            transform: translateX(8px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
+            background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 100%);
         }
 
         .visitor-item.expired {
-            opacity: 0.6;
+            opacity: 0.7;
             border-color: var(--danger);
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
         }
@@ -723,14 +873,15 @@
             padding: 25px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            /* animation: fadeIn 0.8s ease-out; */
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .stat-box:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
         }
 
         .stat-label {
@@ -755,11 +906,13 @@
         /* Onglets */
         .tab-content {
             display: none;
+            opacity: 0;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .tab-content.active {
             display: block;
-            /* animation supprimée */
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         /* Modale */
@@ -775,11 +928,12 @@
             z-index: 100;
             align-items: center;
             justify-content: center;
-            /* animation supprimée */
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal.active {
             display: flex;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-content {
@@ -791,7 +945,7 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
-            /* animation supprimée */
+            animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* Remplacement en ligne `background: white` utilisations inserer via JS/modele */
@@ -888,31 +1042,293 @@
             max-width: 750px;
         }
 
-        /* Journal d'acces */
+        /* Journal d'acces - Styles Modernes et Dynamiques */
         .log-item {
-            background: var(--light);
-            border-left: 4px solid var(--primary);
-            border-radius: 8px;
-            padding: 15px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.04) 100%);
+            border: 2px solid var(--border);
+            border-left: 5px solid #10b981;
+            border-radius: 12px;
+            padding: 16px;
             margin-bottom: 12px;
             font-size: 13px;
-            animation: slideInRight 0.5s ease-out;
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            will-change: transform, box-shadow;
+        }
+
+        .log-item:hover {
+            transform: translateX(8px) translateY(-2px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.25);
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
         }
 
         .log-item.denied {
             border-left-color: var(--danger);
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, transparent 100%);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.02) 100%);
+        }
+
+        .log-item.denied:hover {
+            border-color: var(--danger);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.15);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.04) 100%);
+        }
+
+        .log-item-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .log-timestamp {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 6px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .log-details {
             color: var(--dark);
-            opacity: 0.7;
+            opacity: 0.8;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .log-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 12px;
+            flex-shrink: 0;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .log-status-badge.approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .log-status-badge.denied {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .log-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .log-item.approved .log-status-dot {
+            background: #10b981;
+        }
+
+        .log-item.denied .log-status-dot {
+            background: #ef4444;
+        }
+
+        /* Groupement par Date */
+        .log-date-group {
+            margin-bottom: 25px;
+            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .log-date-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .log-date-header::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .log-date-title {
+            font-weight: 700;
+            color: #10b981;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .log-date-count {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.6;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+
+        .log-items-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Photo dans le log-item */
+        .log-item-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform;
+        }
+
+        .log-item-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .log-item:hover .log-item-photo {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .log-item:hover .log-item-photo img {
+            transform: scale(1.15);
+        }
+
+        /* Layout amélioré du log-item avec photo */
+        .log-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+        }
+
+        .log-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Historique Stats */
+        #historyStats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        /* Styles de recherche d'historique */
+        #historySearch {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%) !important;
+            border: 2px solid #6ee7b7 !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.12), inset 0 1px 3px rgba(16, 185, 129, 0.05) !important;
+            color: #065f46 !important;
+            font-weight: 500 !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+        }
+
+        #historySearch:focus {
+            border-color: #10b981 !important;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), inset 0 2px 4px rgba(16, 185, 129, 0.1), 0 12px 35px rgba(16, 185, 129, 0.25) !important;
+            transform: translateY(-2px) scale(1.02) !important;
+        }
+
+        #historySearch::placeholder {
+            color: #059669 !important;
+            opacity: 0.7 !important;
+            font-weight: 500 !important;
+        }
+
+        #historyDateFilter {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%) !important;
+            border: 2px solid #6ee7b7 !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.12), inset 0 1px 3px rgba(16, 185, 129, 0.05) !important;
+            color: #065f46 !important;
+            font-weight: 500 !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+        }
+
+        #historyDateFilter:focus {
+            border-color: #10b981 !important;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2), inset 0 2px 4px rgba(16, 185, 129, 0.1), 0 12px 35px rgba(16, 185, 129, 0.25) !important;
+            transform: translateY(-2px) scale(1.02) !important;
+        }
+
+        #historyDateFilter::placeholder {
+            color: #059669 !important;
+            opacity: 0.7 !important;
+            font-weight: 500 !important;
+        }
+
+        /* Style amélioré pour les sélecteurs de date */
+        #historyDateFilter::-webkit-calendar-picker-indicator {
+            filter: invert(30%) sepia(95%) saturate(800%) hue-rotate(90deg) brightness(1.2);
+            cursor: pointer;
+        }
+
+        /* Meilleure lisibilité pour le texte saisi */
+        #historySearch,
+        #historyDateFilter {
+            letter-spacing: 0.3px !important;
+        }
+
+        /* Améliore l'affichage des résultats */
+        #historyResults {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(240, 253, 250, 0.5) 0%, rgba(236, 253, 245, 0.3) 100%);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        /* Améliore les transitions des cartes de visiteur */
+        .visitor-item {
+            will-change: transform, box-shadow, border-color;
+        }
+
+        .visitor-item img {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .visitor-item:hover .visitor-photo img {
+            transform: scale(1.1);
+        }
+
+        /* Empty state styling pour history */
+        #accessLog:empty::after,
+        #historyResults:empty::after {
+            content: '';
         }
 
         /* Bar de defilement */
@@ -1362,13 +1778,13 @@
                             <label for="visitorType">Type de Rendez-vous</label>
                             <select id="visitorType" required>
                                  <option value="">-- Sélectionner --</option>
-                                <option value="Rendez-vous Entreprise">Rendez-vous Entreprise</option>
-                                <option value="Rendez-vous Medical">Rendez-vous Medical</option>
-                                <option value="Participant Événement">Participant Événement</option>
-                                <option value="Invité">Invité</option>
-                                <option value="Prestataire">Prestataire</option>
-                                <option value="Salle de sport">Salle de sport</option>
-                                <option value="Visiteur">Visiteur</option>
+                                <option value="Rendez-vous Entreprise">RDV : PDG</option>
+                                <option value="Rendez-vous Medical">RDV : Chef d'antene</option>
+                                <option value="Participant Événement">RDV : Redacteur en chef</option>
+                                <option value="Invité">RDV : Redacteur adjoint</option>
+                                <option value="Prestataire">RDV : Resources Humaines</option>
+                                <option value="Salle de sport">RDV : Coordinateur</option>
+                                <option value="Visiteur">RDV : Visiteur</option>
                             </select>
                         </div>
 
@@ -1388,17 +1804,23 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="startDateTime">Date & Heure de Début</label>
-                            <input type="datetime-local" id="startDateTime" required>
+                            <label for="appointmentDuration">⏱️ Durée Estimée (en minutes)</label>
+                            <input type="number" id="appointmentDuration" min="5" value="30" placeholder="Ex: 30 minutes">
+                            <small style="color: var(--dark); opacity: 0.6; display: block; margin-top: 6px;">La date et l'heure seront proposées automatiquement</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="endDateTime">Date & Heure de Fin</label>
-                            <input type="datetime-local" id="endDateTime" required>
+                            <button type="button" class="btn btn-secondary" onclick="findNextAvailableSlot()" style="width: 100%; margin-bottom: 10px;">
+                                🔍 Trouver le Prochain Créneau Disponible
+                            </button>
+                            <div id="slotSuggestion" style="display: none; background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 8px; padding: 12px; margin-bottom: 10px; color: #065f46;">
+                                <strong>✓ Créneau trouvé:</strong>
+                                <div id="slotDetails" style="margin-top: 8px; font-size: 14px;"></div>
+                            </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="visitorNotes">Laisser un mot </label>
+                            <label for="visitorNotes">Laisser un mot</label>
                             <textarea id="visitorNotes" placeholder="Informations supplémentaires..."></textarea>
                         </div>
 
@@ -1489,15 +1911,48 @@
 
         <!-- Onglet histoqique -->
         <div id="history" class="tab-content">
-            <div class="card">
-                <h2>Historique des Accès</h2>
-                <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
-                    <input id="historySearch" placeholder="Rechercher par nom, code, téléphone, email..." style="flex:1; padding: 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 14px;">
-                    <button id="historyClearBtn" class="btn btn-secondary btn-small">Effacer</button>
+            <!-- Stats rapides -->
+            <div class="stats-grid" id="historyStats" style="margin-bottom: 30px;">
+                <div class="stat-box">
+                    <div class="stat-label">Accès Aujourd'hui</div>
+                    <div class="stat-value" id="todayAccessCount">0</div>
                 </div>
+                <div class="stat-box">
+                    <div class="stat-label">✓ Autorisés</div>
+                    <div class="stat-value" id="approvedCount" style="color: #10b981;">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">✗ Refusés</div>
+                    <div class="stat-value" id="deniedCount" style="color: #ef4444;">0</div>
+                </div>
+            </div>
 
-                <div id="historyResults" style="margin-top: 12px;"></div>
-                <div id="accessLog" style="margin-top: 20px;"></div>
+            <!-- Recherche par Date et Nom -->
+            <div class="card" style="margin-bottom: 20px;">
+                <h3 style="margin-bottom: 20px; color: #10b981; display: flex; align-items: center; gap: 8px;">🔍 Filtrer par Date & Nom</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div>
+                        <label style="font-size: 13px; font-weight: 700; color: #10b981; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">📅 Date</label>
+                        <input type="date" id="historyDateFilter" style="flex:1; width: 100%; border-radius: 12px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 13px; font-weight: 700; color: #10b981; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">👤 Nom du Visiteur</label>
+                        <input type="text" id="historySearch" placeholder="Rechercher par nom..." style="flex:1; width: 100%; border-radius: 12px;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="historyClearBtn" class="btn btn-secondary btn-small" style="flex: 1;">🔄 Réinitialiser</button>
+                </div>
+                <div id="historyResults" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- Journal d'Accès Regroupé par Dates -->
+            <div class="card">
+                <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <span>📋 Journal d'Accès</span>
+                    <span id="accessLogCount" style="font-size: 12px; opacity: 0.6; font-weight: 400;"></span>
+                </h3>
+                <div id="accessLog" style="display: flex; flex-direction: column; gap: 20px;"></div>
             </div>
         </div>
 
@@ -1657,6 +2112,7 @@
         // ===================== MULTILINGUAL SYSTEM ======================
         const translations = {
             en: {
+                dashboard: "Dashboard",
                 create: "Create",
                 verify: "Verify",
                 history: "History",
@@ -1725,9 +2181,17 @@
                 summaryByType: "Summary by Type",
                 appointmentType: "Appointment Type",
                 number: "Number",
-                percentage: "Percentage"
+                percentage: "Percentage",
+                rdvPdg: "CEO",
+                rdvChefAntene: "Branch Manager",
+                rdvRedacteurEnChef: "Chief Editor",
+                rdvRedacteurAdjoint: "Assistant Editor",
+                rdvResourcesHumaines: "Human Resources",
+                rdvCoordinateur: "Coordinator",
+                rdvVisiteur: "Visitor"
             },
             zh: {
+                dashboard: "控制板",
                 create: "创建",
                 verify: "验证",
                 history: "历史记录",
@@ -1796,9 +2260,17 @@
                 summaryByType: "按类型汇总",
                 appointmentType: "约会类型",
                 number: "数量",
-                percentage: "百分比"
+                percentage: "百分比",
+                rdvPdg: "首席执行官",
+                rdvChefAntene: "分公司经理",
+                rdvRedacteurEnChef: "主编",
+                rdvRedacteurAdjoint: "副编辑",
+                rdvResourcesHumaines: "人力资源",
+                rdvCoordinateur: "协调员",
+                rdvVisiteur: "访客"
             },
             hi: {
+                dashboard: "डैशबोर्ड",
                 create: "बनाएं",
                 verify: "सत्यापित करें",
                 history: "इतिहास",
@@ -1867,9 +2339,17 @@
                 summaryByType: "प्रकार द्वारा सारांश",
                 appointmentType: "नियुक्ति प्रकार",
                 number: "संख्या",
-                percentage: "प्रतिशत"
+                percentage: "प्रतिशत",
+                rdvPdg: "सीईओ",
+                rdvChefAntene: "शाखा प्रबंधक",
+                rdvRedacteurEnChef: "प्रधान संपादक",
+                rdvRedacteurAdjoint: "सहायक संपादक",
+                rdvResourcesHumaines: "मानव संसाधन",
+                rdvCoordinateur: "समन्वयक",
+                rdvVisiteur: "आगंतुक"
             },
             es: {
+                dashboard: "Panel de control",
                 create: "Crear",
                 verify: "Verificar",
                 history: "Historial",
@@ -1938,9 +2418,17 @@
                 summaryByType: "Resumen por Tipo",
                 appointmentType: "Tipo de Cita",
                 number: "Número",
-                percentage: "Porcentaje"
+                percentage: "Porcentaje",
+                rdvPdg: "Director General",
+                rdvChefAntene: "Gerente de Sucursal",
+                rdvRedacteurEnChef: "Editor Jefe",
+                rdvRedacteurAdjoint: "Editor Adjunto",
+                rdvResourcesHumaines: "Recursos Humanos",
+                rdvCoordinateur: "Coordinador",
+                rdvVisiteur: "Visitante"
             },
             fr: {
+                dashboard: "Tableau de bord",
                 create: "Créer",
                 verify: "Vérifier",
                 history: "Historique",
@@ -2009,9 +2497,17 @@
                 summaryByType: "Résumé par Type",
                 appointmentType: "Type de Rendez-vous",
                 number: "Nombre",
-                percentage: "Pourcentage"
+                percentage: "Pourcentage",
+                rdvPdg: "PDG",
+                rdvChefAntene: "Chef d'antenne",
+                rdvRedacteurEnChef: "Rédacteur en chef",
+                rdvRedacteurAdjoint: "Rédacteur adjoint",
+                rdvResourcesHumaines: "Ressources Humaines",
+                rdvCoordinateur: "Coordinateur",
+                rdvVisiteur: "Visiteur"
             },
             ar: {
+                dashboard: "لوحة التحكم",
                 create: "إنشاء",
                 verify: "التحقق",
                 history: "السجل",
@@ -2080,9 +2576,17 @@
                 summaryByType: "الملخص حسب النوع",
                 appointmentType: "نوع الموعد",
                 number: "عدد",
-                percentage: "نسبة مئوية"
+                percentage: "نسبة مئوية",
+                rdvPdg: "الرئيس التنفيذي",
+                rdvChefAntene: "مدير الفرع",
+                rdvRedacteurEnChef: "رئيس التحرير",
+                rdvRedacteurAdjoint: "محرر مساعد",
+                rdvResourcesHumaines: "موارد بشرية",
+                rdvCoordinateur: "منسق",
+                rdvVisiteur: "زائر"
             },
             pt: {
+                dashboard: "Painel de controle",
                 create: "Criar",
                 verify: "Verificar",
                 history: "Histórico",
@@ -2151,9 +2655,17 @@
                 summaryByType: "Resumo por Tipo",
                 appointmentType: "Tipo de Compromisso",
                 number: "Número",
-                percentage: "Porcentagem"
+                percentage: "Porcentagem",
+                rdvPdg: "CEO",
+                rdvChefAntene: "Gerente de Filial",
+                rdvRedacteurEnChef: "Editor-Chefe",
+                rdvRedacteurAdjoint: "Editor Adjunto",
+                rdvResourcesHumaines: "Recursos Humanos",
+                rdvCoordinateur: "Coordenador",
+                rdvVisiteur: "Visitante"
             },
             ru: {
+                dashboard: "Панель управления",
                 create: "Создать",
                 verify: "Проверить",
                 history: "История",
@@ -2222,9 +2734,17 @@
                 summaryByType: "Резюме по типу",
                 appointmentType: "Тип встречи",
                 number: "Число",
-                percentage: "Процент"
+                percentage: "Процент",
+                rdvPdg: "Генеральный директор",
+                rdvChefAntene: "Менеджер отделения",
+                rdvRedacteurEnChef: "Главный редактор",
+                rdvRedacteurAdjoint: "Заместитель редактора",
+                rdvResourcesHumaines: "Управление персоналом",
+                rdvCoordinateur: "Координатор",
+                rdvVisiteur: "Посетитель"
             },
             ja: {
+                dashboard: "ダッシュボード",
                 create: "作成",
                 verify: "確認",
                 history: "履歴",
@@ -2293,9 +2813,17 @@
                 summaryByType: "タイプ別サマリー",
                 appointmentType: "予約のタイプ",
                 number: "番号",
-                percentage: "パーセンテージ"
+                percentage: "パーセンテージ",
+                rdvPdg: "最高経営責任者",
+                rdvChefAntene: "支店長",
+                rdvRedacteurEnChef: "編集長",
+                rdvRedacteurAdjoint: "副編集長",
+                rdvResourcesHumaines: "人的資源",
+                rdvCoordinateur: "コーディネーター",
+                rdvVisiteur: "訪問者"
             },
             de: {
+                dashboard: "Instrumententafel",
                 create: "Erstellen",
                 verify: "Überprüfen",
                 history: "Verlauf",
@@ -2391,8 +2919,6 @@
                 'visitorLocation': 'accessLocation',
                 'visitorService': 'service',
                 'visitorCapacity': 'capacityLabel',
-                'startDateTime': 'startDateTime',
-                'endDateTime': 'endDateTime',
                 'visitorNotes': 'notes',
                 'verifyCode': 'verificationCode',
                 'historySearch': 'searchPlaceholder',
@@ -2592,21 +3118,22 @@
             if (typeSelect) {
                 const options = typeSelect.querySelectorAll('option');
                 const optionMap = {
-                    'Rendez-vous Entreprise': 'businessAppointment',
-                    'Rendez-vous Medical': 'medicalAppointment',
-                    'Participant Événement': 'eventParticipant',
-                    'Invité': 'guest',
-                    'Prestataire': 'provider',
-                    'Salle de sport': 'gym',
-                    'Visiteur': 'visitor'
+                    'Rendez-vous Entreprise': 'rdvPdg',
+                    'Rendez-vous Medical': 'rdvChefAntene',
+                    'Participant Événement': 'rdvRedacteurEnChef',
+                    'Invité': 'rdvRedacteurAdjoint',
+                    'Prestataire': 'rdvResourcesHumaines',
+                    'Salle de sport': 'rdvCoordinateur',
+                    'Visiteur': 'rdvVisiteur'
                 };
                 
                 options.forEach((opt, idx) => {
                     const optValue = opt.value.trim();
                     if (optValue === '' || idx === 0) {
-                        opt.textContent = '-- ' + t('male').split(' ')[0] + ' --';
+                        opt.textContent = '-- Sélectionner --';
                     } else if (optionMap[optValue]) {
-                        opt.textContent = t(optionMap[optValue]);
+                        const translatedText = t(optionMap[optValue]);
+                        opt.textContent = 'RDV : ' + translatedText;
                     }
                 });
             }
@@ -2674,6 +3201,18 @@
             const statsMonthInput = document.getElementById('statsMonthYear');
             if (statsMonthInput) {
                 statsMonthInput.value = `${year}-${month}`;
+                // Définir le minimum au mois courant pour empêcher de sélectionner un mois antérieur
+                statsMonthInput.min = `${year}-${month}`;
+                
+                // Ajouter une validation au changement de mois
+                statsMonthInput.addEventListener('change', function() {
+                    const selectedMonth = this.value;
+                    const currentMonth = `${year}-${month}`;
+                    if (selectedMonth < currentMonth) {
+                        alert('❌ Vous ne pouvez pas sélectionner un mois antérieur au mois actuel');
+                        this.value = currentMonth;
+                    }
+                });
             }
         });
 
@@ -2994,28 +3533,370 @@
             
             if (startDateInput) {
                 startDateInput.min = minimumDateTime;
-                startDateInput.addEventListener('change', function() {
-                    const selectedDate = new Date(this.value);
-                    if (selectedDate < new Date(minimumDateTime)) {
-                        alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
-                        this.value = '';
-                    }
-                });
+                // Utiliser une clé pour éviter les event listeners en double
+                if (!startDateInput.dataset.validationInitialized) {
+                    startDateInput.addEventListener('change', function() {
+                        const selectedDate = new Date(this.value);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (selectedDate < today) {
+                            alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
+                            this.value = '';
+                        }
+                    });
+                    startDateInput.dataset.validationInitialized = 'true';
+                }
             }
             if (endDateInput) {
                 endDateInput.min = minimumDateTime;
-                endDateInput.addEventListener('change', function() {
-                    const selectedDate = new Date(this.value);
-                    if (selectedDate < new Date(minimumDateTime)) {
-                        alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
-                        this.value = '';
-                    }
-                });
+                // Utiliser une clé pour éviter les event listeners en double
+                if (!endDateInput.dataset.validationInitialized) {
+                    endDateInput.addEventListener('change', function() {
+                        const selectedDate = new Date(this.value);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (selectedDate < today) {
+                            alert('❌ La date ne peut pas être antérieure à aujourd\'hui');
+                            this.value = '';
+                        }
+                    });
+                    endDateInput.dataset.validationInitialized = 'true';
+                }
             }
         }
         
         // Appeler la fonction au chargement
         document.addEventListener('DOMContentLoaded', initializeDateMinimum);
+
+        // ===== SYSTÈME DE GESTION DES CONFLITS DE RENDEZ-VOUS =====
+
+        // Fonction pour mettre à jour l'heure de fin automatiquement
+        function updateEndTimeFromDuration() {
+            console.log('[DEBUG] updateEndTimeFromDuration appelée');
+            const startInput = document.getElementById('startDateTime');
+            const durationInput = document.getElementById('appointmentDuration');
+            const endInput = document.getElementById('endDateTime');
+
+            if (startInput.value && durationInput.value) {
+                const startDate = new Date(startInput.value);
+                const duration = parseInt(durationInput.value) || 30;
+                const endDate = new Date(startDate.getTime() + duration * 60000);
+                
+                endInput.value = endDate.toISOString().slice(0, 16);
+                console.log('[DEBUG] Fin calculée:', endInput.value);
+            }
+        }
+
+        // Fonction pour vérifier s'il y a des conflits de rendez-vous
+        function checkForConflicts(appointmentType, startTime, endTime) {
+            const conflicts = visitors.filter(v => {
+                // Vérifier si c'est le même type de rendez-vous
+                if (v.type !== appointmentType) return false;
+                
+                const vStart = new Date(v.startTime);
+                const vEnd = new Date(v.endTime);
+                const aStart = new Date(startTime);
+                const aEnd = new Date(endTime);
+                
+                // Vérifier chevauche temporel
+                return !(aEnd <= vStart || aStart >= vEnd);
+            });
+
+            return conflicts;
+        }
+
+        // Fonction pour trouver le prochain créneau disponible
+        function findNextAvailableSlot() {
+            console.log('===== DÉBUT RECHERCHE CRÉNEAU =====');
+            selectedSlot = null;
+            
+            // Vérifier les champs
+            const typeSelect = document.getElementById('visitorType');
+            const durationInput = document.getElementById('appointmentDuration');
+            
+            if (!typeSelect || !typeSelect.value || !durationInput || !durationInput.value) {
+                alert('⚠️ Veuillez d\'abord sélectionner:\n- Le type de rendez-vous\n- La durée estimée');
+                return;
+            }
+
+            const appointmentType = typeSelect.value;
+            const durationMinutes = parseInt(durationInput.value);
+            
+            console.log('Type:', appointmentType, '| Durée:', durationMinutes, 'min');
+            console.log('Visiteurs:', visitors.length);
+            
+            // Paramètres
+            const WORK_HOUR_START = 8;
+            const WORK_HOUR_END = 16;
+            const LUNCH_START = 12;
+            const LUNCH_END = 13;
+            
+            // Point de départ
+            let currentTime = new Date();
+            currentTime.setSeconds(0);
+            currentTime.setMilliseconds(0);
+            currentTime.setMinutes(0);
+            
+            console.log('Heure initiale:', currentTime.toLocaleString('fr-FR'));
+            
+            // Si des RDV existent, commencer après le dernier
+            if (visitors && visitors.length > 0) {
+                const lastVisitor = visitors.reduce((prev, current) => {
+                    return new Date(current.endTime) > new Date(prev.endTime) ? current : prev;
+                });
+                currentTime = new Date(lastVisitor.endTime);
+                currentTime.setSeconds(0);
+                currentTime.setMilliseconds(0);
+                currentTime.setMinutes(0);
+                console.log('Dernier RDV se termine à:', new Date(lastVisitor.endTime).toLocaleString('fr-FR'));
+                console.log('Démarrage à:', currentTime.toLocaleString('fr-FR'));
+            }
+            
+            // Rechercher pendant 30 jours max
+            const searchLimit = new Date(currentTime);
+            searchLimit.setDate(searchLimit.getDate() + 30);
+            
+            console.log('Limite de recherche:', searchLimit.toLocaleString('fr-FR'));
+            console.log('Heures de travail: 8h-16h, pause 12h-13h');
+            
+            let iterations = 0;
+            
+            // Boucle de recherche
+            while (currentTime.getTime() < searchLimit.getTime() && iterations < 500) {
+                iterations++;
+                const hour = currentTime.getHours();
+                
+                // Passer les heures de fermeture
+                if (hour >= WORK_HOUR_END) {
+                    console.log(`${iterations}. ${currentTime.getHours()}h: hors horaires → jour suivant 8h`);
+                    currentTime.setDate(currentTime.getDate() + 1);
+                    currentTime.setHours(WORK_HOUR_START, 0, 0, 0);
+                    continue;
+                }
+                
+                if (hour < WORK_HOUR_START) {
+                    console.log(`${iterations}. ${currentTime.getHours()}h: avant 8h → 8h`);
+                    currentTime.setHours(WORK_HOUR_START, 0, 0, 0);
+                    continue;
+                }
+                
+                if (hour >= LUNCH_START && hour < LUNCH_END) {
+                    console.log(`${iterations}. ${currentTime.getHours()}h: pause midi → 13h`);
+                    currentTime.setHours(LUNCH_END, 0, 0, 0);
+                    continue;
+                }
+                
+                // Calculer la fin du créneau
+                const slotStart = new Date(currentTime);
+                const slotEnd = new Date(slotStart.getTime() + durationMinutes * 60 * 1000);
+                
+                // Vérifier que le créneau ne dépasse pas 16h
+                if (slotEnd.getHours() > WORK_HOUR_END || (slotEnd.getHours() === WORK_HOUR_END && slotEnd.getMinutes() > 0)) {
+                    console.log(`${iterations}. ${slotStart.getHours()}h: fin à ${slotEnd.getHours()}h${slotEnd.getMinutes()} > 16h → suivant`);
+                    currentTime.setHours(hour + 1, 0, 0, 0);
+                    continue;
+                }
+                
+                // Vérifier que le créneau ne chevauche pas la pause
+                const slotStartMin = slotStart.getHours() * 60 + slotStart.getMinutes();
+                const slotEndMin = slotEnd.getHours() * 60 + slotEnd.getMinutes();
+                const lunchStartMin = LUNCH_START * 60;
+                const lunchEndMin = LUNCH_END * 60;
+                
+                if (slotStartMin < lunchEndMin && slotEndMin > lunchStartMin) {
+                    console.log(`${iterations}. ${slotStart.getHours()}h: chevauche pause → 13h`);
+                    currentTime.setHours(LUNCH_END, 0, 0, 0);
+                    continue;
+                }
+                
+                // Vérifier les conflits
+                const hasConflict = visitors.some(v => {
+                    if (v.type !== appointmentType) return false;
+                    const vStart = new Date(v.startTime);
+                    const vEnd = new Date(v.endTime);
+                    return slotStart.getTime() < vEnd.getTime() && slotEnd.getTime() > vStart.getTime();
+                });
+                
+                if (hasConflict) {
+                    console.log(`${iterations}. ${slotStart.getHours()}h: CONFLIT détecté`);
+                } else {
+                    console.log(`${iterations}. ${slotStart.getHours()}h: ✓ CRÉNEAU VALIDE TROUVÉ!`);
+                    // Créneau trouvé!
+                    selectedSlot = {
+                        start: new Date(slotStart),
+                        end: new Date(slotEnd)
+                    };
+                    
+                    const suggestionDiv = document.getElementById('slotSuggestion');
+                    const detailsDiv = document.getElementById('slotDetails');
+                    
+                    const dateStr = slotStart.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                    const timeStart = slotStart.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                    const timeEnd = slotEnd.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                    
+                    detailsDiv.innerHTML = `
+                        <div style="font-weight: 600; color: #10b981; margin-bottom: 12px;">
+                            📅 ${dateStr}<br>
+                            🕐 ${timeStart} - ${timeEnd}
+                        </div>
+                        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 15px;">
+                            ✓ Créneau disponible
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="createVisitorWithSlot()" style="width: 100%; font-weight: 600;">
+                            ✅ Créer le Rendez-vous
+                        </button>
+                    `;
+                    
+                    suggestionDiv.style.display = 'block';
+                    console.log('===== FIN: SUCCÈS =====');
+                    return;
+                }
+                
+                // Passer à l'heure suivante
+                currentTime.setHours(hour + 1, 0, 0, 0);
+            }
+            
+            console.log('===== FIN: ÉCHEC (aucun créneau) =====');
+            alert('❌ Aucun créneau disponible trouvé dans les heures de travail (8h-16h, sauf 12h-13h) pour les 30 prochains jours.');
+        }
+        
+        // Fonction pour afficher la suggestion
+        function displaySlotSuggestion(slot, appointmentType) {
+            const suggestionDiv = document.getElementById('slotSuggestion');
+            const detailsDiv = document.getElementById('slotDetails');
+            
+            const dateStr = slot.start.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const timeStr = slot.start.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const endTimeStr = slot.end.toLocaleTimeString('fr-FR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            detailsDiv.innerHTML = `
+                <div style="font-weight: 600; color: #10b981; margin-bottom: 12px;">
+                    📅 ${dateStr}<br>
+                    🕐 ${timeStr} - ${endTimeStr}
+                </div>
+                <div style="font-size: 13px; opacity: 0.9; margin-bottom: 15px;">
+                    ✓ Aucun conflit avec d'autres rendez-vous <strong>${appointmentType}</strong>
+                </div>
+                <button type="button" class="btn btn-success" onclick="createVisitorWithSlot()" style="width: 100%; font-weight: 600;">
+                    ✅ Créer le Rendez-vous avec ce Créneau
+                </button>
+            `;
+            
+            suggestionDiv.style.display = 'block';
+            suggestionDiv.style.animation = 'slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+
+        // Fonction pour créer le rendez-vous directement avec le créneau trouvé
+        function createVisitorWithSlot() {
+            console.log('[DEBUG] createVisitorWithSlot APPELÉE');
+            console.log('[DEBUG] selectedSlot value:', selectedSlot);
+            
+            // Vérifier qu'un créneau a été trouvé
+            if (!selectedSlot) {
+                console.warn('[DEBUG] selectedSlot est null/undefined!');
+                alert('⚠️ Veuillez d\'abord trouver un créneau disponible en cliquant sur "🔍 Trouver le Prochain Créneau Disponible"');
+                return;
+            }
+
+            console.log('[DEBUG] selectedSlot existe:', selectedSlot);
+
+            // Validation des champs obligatoires
+            const name = document.getElementById('visitorName').value.trim();
+            const email = document.getElementById('visitorEmail').value.trim();
+            const phone = document.getElementById('visitorPhone').value.trim();
+            const sex = document.getElementById('visitorSex').value;
+            const type = document.getElementById('visitorType').value;
+            const location = document.getElementById('visitorLocation').value.trim();
+            const service = document.getElementById('visitorService').value.trim();
+            const capacity = document.getElementById('visitorCapacity').value;
+            const notes = document.getElementById('visitorNotes').value.trim();
+
+            // Vérifier les champs obligatoires
+            if (!name || !phone || !sex || !type || !location || !service) {
+                alert('⚠️ Veuillez remplir tous les champs obligatoires:\n✓ Nom complet\n✓ Téléphone\n✓ Sexe\n✓ Type de rendez-vous\n✓ Lieu d\'accès\n✓ Service');
+                return;
+            }
+
+            const appointmentType = type;
+
+            // Vérifier les conflits finaux avec le créneau sélectionné
+            const conflicts = checkForConflicts(appointmentType, selectedSlot.start, selectedSlot.end);
+            if (conflicts.length > 0) {
+                const conflictList = conflicts.map(c => 
+                    `• ${c.name} (${new Date(c.startTime).toLocaleString('fr-FR')})`
+                ).join('\n');
+                
+                if (!confirm(`⚠️ Conflit détecté!\n\n${conflictList}\n\nVoulez-vous continuer quand même?`)) {
+                    return;
+                }
+            }
+
+            // Générer un code de 5 chiffres
+            const quickCode = String(Math.floor(10000 + Math.random() * 90000));
+
+            const visitor = {
+                id: 'VIS-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
+                quickCode: quickCode,
+                name: name,
+                sexe: sex,
+                email: email,
+                phone: phone,
+                type: type,
+                location: location,
+                service: service,
+                capacity: parseInt(capacity) || 1,
+                startTime: selectedSlot.start,
+                endTime: selectedSlot.end,
+                notes: notes,
+                createdAt: new Date(),
+                scans: [],
+                photo: currentPhotoCanvas ? currentPhotoCanvas.toDataURL('image/jpeg', 0.9) : null,
+                category: 'visitor',
+                duration: parseInt(document.getElementById('appointmentDuration').value) || 30
+            };
+
+            visitors.push(visitor);
+            localStorage.setItem('visitors', JSON.stringify(visitors));
+
+            console.log('[DEBUG] createVisitorWithSlot: visitor created and saved', visitor);
+            console.log('[DEBUG] createVisitorWithSlot: calling generateQRCode');
+            generateQRCode(visitor);
+            console.log('[DEBUG] createVisitorWithSlot: QR Code generated');
+            document.getElementById('qrContainer').style.display = 'flex';
+            
+            // Animation de succès
+            const slotDiv = document.getElementById('slotSuggestion');
+            slotDiv.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%)';
+            slotDiv.innerHTML = '<div style="text-align: center; padding: 20px; color: #10b981; font-weight: 600;">✅ Rendez-vous créé avec succès!</div>';
+
+            setTimeout(() => {
+                console.log('[DEBUG] createVisitorWithSlot: resetting form and clearing data');
+                document.getElementById('createForm').reset();
+                clearPhoto();
+                document.getElementById('slotSuggestion').style.display = 'none';
+                selectedSlot = null; // Réinitialiser le créneau sélectionné
+                console.log('[DEBUG] createVisitorWithSlot: selectedSlot reset to null');
+                updateDashboard();
+                alert('✓ Invitation créée avec succès!\n\nLe rendez-vous a été enregistré automatiquement.');
+            }, 800);
+        }
+
         let accessLog = JSON.parse(localStorage.getItem('accessLog')) || [];
         let currentQRCode = null;
         let currentPhotoCanvas = null;
@@ -3026,6 +3907,7 @@
         let visitorStreamActive = false;
         let ceremonyStreamActive = false;
         let visitorsExpandedState = false; // Pour tracker l'état du déploiement des visiteurs
+        let selectedSlot = null; // Stocker le créneau sélectionné par findNextAvailableSlot()
 
         // Initialiser
         document.addEventListener('DOMContentLoaded', function() {
@@ -3065,18 +3947,18 @@
 
         // Definir la date et l'heure actuelle comme valeur par defaut
         function setDateTime() {
-            const now = new Date();
-            const startInput = document.getElementById('startDateTime');
-            const endInput = document.getElementById('endDateTime');
+            const durationInput = document.getElementById('appointmentDuration');
             const cerStartInput = document.getElementById('cerStart');
             const cerEndInput = document.getElementById('cerEnd');
             
-            if (startInput) startInput.value = now.toISOString().slice(0, 16);
-            if (endInput) {
-                const later = new Date(now.getTime() + 2 * 60 * 60000);
-                endInput.value = later.toISOString().slice(0, 16);
-            }
+            // Les champs startDateTime et endDateTime n'existent plus
+            // car les heures sont désormais fournies par le système de recherche de créneaux
             
+            // Réinitialiser la durée estimée
+            if (durationInput) durationInput.value = '30'; // Durée par défaut de 30 minutes
+            
+            // Gérer les champs de cérémonie s'ils existent
+            const now = new Date();
             if (cerStartInput) cerStartInput.value = now.toISOString().slice(0, 16);
             if (cerEndInput) {
                 const later = new Date(now.getTime() + 4 * 60 * 60000);
@@ -3107,7 +3989,7 @@
 
             // Réinitialiser la date minimale quand on passe à l'onglet créer
             if (tabName === 'create') {
-                setTimeout(initializeDateMinimum, 100);
+                initializeDateMinimum();
             }
 
             // Supp class active de tous les onglets et boutons
@@ -3296,69 +4178,92 @@
         // Cree un visiteur
         function createVisitor(e) {
             e.preventDefault();
+            console.log('[DEBUG] createVisitor APPELÉE');
+            console.log('[DEBUG] selectedSlot value:', selectedSlot);
             
-            // Validation: vérifier que les dates ne sont pas antérieures à aujourd'hui
-            const startDateTime = new Date(document.getElementById('startDateTime').value);
-            const endDateTime = new Date(document.getElementById('endDateTime').value);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            if (startDateTime < today) {
-                alert('❌ La date de début ne peut pas être antérieure à aujourd\'hui');
+            // Vérifier qu'un créneau a été trouvé et sélectionné
+            if (!selectedSlot) {
+                console.warn('[DEBUG] selectedSlot est null/undefined!');
+                alert('⚠️ Veuillez d\'abord trouver un créneau disponible en cliquant sur "🔍 Trouver le Prochain Créneau Disponible"');
                 return;
-            }
-            
-            if (endDateTime < today) {
-                alert('❌ La date de fin ne peut pas être antérieure à aujourd\'hui');
-                return;
-            }
-            
-            if (endDateTime < startDateTime) {
-                alert('❌ La date de fin doit être après la date de début');
-                return;
-            }
-            
-            if (!requireAuth()) {
-                console.warn('Utilisateur non connecté, création en mode invité.');
-                // continue anyway, QR code will still be generated
             }
 
-            // Generer un code de 5 chiffres
+            console.log('[DEBUG] selectedSlot existe:', selectedSlot);
+
+            // Validation des champs obligatoires
+            const name = document.getElementById('visitorName').value.trim();
+            const email = document.getElementById('visitorEmail').value.trim();
+            const phone = document.getElementById('visitorPhone').value.trim();
+            const sex = document.getElementById('visitorSex').value;
+            const appointmentType = document.getElementById('visitorType').value;
+            const location = document.getElementById('visitorLocation').value.trim();
+            const service = document.getElementById('visitorService').value.trim();
+            const capacity = document.getElementById('visitorCapacity').value;
+            const notes = document.getElementById('visitorNotes').value.trim();
+
+            if (!name || !phone || !sex || !appointmentType || !location || !service) {
+                alert('⚠️ Veuillez remplir tous les champs obligatoires:\n✓ Nom complet\n✓ Téléphone\n✓ Sexe\n✓ Type de rendez-vous\n✓ Lieu d\'accès\n✓ Service');
+                return;
+            }
+
+            // Vérifier les conflits finaux avec le créneau sélectionné
+            const conflicts = checkForConflicts(appointmentType, selectedSlot.start, selectedSlot.end);
+            if (conflicts.length > 0) {
+                const conflictList = conflicts.map(c => 
+                    `• ${c.name} (${new Date(c.startTime).toLocaleString('fr-FR')})`
+                ).join('\n');
+                
+                if (!confirm(`⚠️ Conflit détecté!\n\n${conflictList}\n\nVoulez-vous continuer quand même?`)) {
+                    return;
+                }
+            }
+
+            if (!requireAuth()) {
+                console.warn('Utilisateur non connecté, création en mode invité.');
+            }
+
+            // Générer un code de 5 chiffres
             const quickCode = String(Math.floor(10000 + Math.random() * 90000));
 
             const visitor = {
                 id: 'VIS-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase(),
                 quickCode: quickCode,
-                name: document.getElementById('visitorName').value,
-                sexe: document.getElementById('visitorSex').value,
-                email: document.getElementById('visitorEmail').value,
-                phone: document.getElementById('visitorPhone').value,
-                type: document.getElementById('visitorType').value,
-                location: document.getElementById('visitorLocation').value,
-                service: document.getElementById('visitorService').value,
-                capacity: parseInt(document.getElementById('visitorCapacity').value) || 1,
-                startTime: startDateTime,
-                endTime: endDateTime,
-                notes: document.getElementById('visitorNotes').value,
+                name: name,
+                sexe: sex,
+                email: email,
+                phone: phone,
+                type: appointmentType,
+                location: location,
+                service: service,
+                capacity: parseInt(capacity) || 1,
+                startTime: selectedSlot.start,
+                endTime: selectedSlot.end,
+                notes: notes,
                 createdAt: new Date(),
                 scans: [],
                 photo: currentPhotoCanvas ? currentPhotoCanvas.toDataURL('image/jpeg', 0.9) : null,
-                category: 'visitor'
+                category: 'visitor',
+                duration: parseInt(document.getElementById('appointmentDuration').value) || 30
             };
 
             visitors.push(visitor);
             localStorage.setItem('visitors', JSON.stringify(visitors));
 
-            console.log('createVisitor: saving visitor and generating QR', visitor);
+            console.log('[DEBUG] createVisitor: visitor and generating QR', visitor);
+            console.log('[DEBUG] createVisitor: calling generateQRCode');
             generateQRCode(visitor);
+            console.log('[DEBUG] createVisitor: QR Code generated');
             // Force display in case CSS was hiding it
             document.getElementById('qrContainer').style.display = 'flex';
             
             // Reset form only AFTER showing the QR code
             setTimeout(() => {
+                console.log('[DEBUG] createVisitor: resetting form and clearing data');
                 document.getElementById('createForm').reset();
                 clearPhoto();
-                setDateTime();
+                document.getElementById('slotSuggestion').style.display = 'none';
+                selectedSlot = null; // Réinitialiser le créneau sélectionné
+                console.log('[DEBUG] createVisitor: selectedSlot reset to null');
                 updateDashboard();
                 alert('✓ Invitation créée avec succès!');
             }, 500);
@@ -4696,13 +5601,13 @@ Sexe: ${visitor.sexe || 'N/A'}
 
         // Mapping between French appointment type names and translation keys
         const appointmentTypeMap = {
-            'Rendez-vous Entreprise': 'businessAppointment',
-            'Rendez-vous Medical': 'medicalAppointment',
-            'Participant Événement': 'eventParticipant',
-            'Invité': 'guest',
-            'Prestataire': 'provider',
-            'Salle de sport': 'gym',
-            'Visiteur': 'visitor'
+            'Rendez-vous Entreprise': 'rdvPdg',
+            'Rendez-vous Medical': 'rdvChefAntene',
+            'Participant Événement': 'rdvRedacteurEnChef',
+            'Invité': 'rdvRedacteurAdjoint',
+            'Prestataire': 'rdvResourcesHumaines',
+            'Salle de sport': 'rdvCoordinateur',
+            'Visiteur': 'rdvVisiteur'
         };
 
         // Translate appointment type name based on current language
@@ -4901,25 +5806,101 @@ Sexe: ${visitor.sexe || 'N/A'}
             document.body.removeChild(link);
         }
 
-        // Mise a jour du journal d'accès
+        // Fonction pour obtenir la photo d'un visiteur
+        function getVisitorPhoto(visitorName) {
+            // Rechercher le visiteur par nom
+            const visitor = visitors.find(v => v.name && v.name.toLowerCase() === visitorName.toLowerCase());
+            return visitor && visitor.photo ? visitor.photo : null;
+        }
+
+        // Mise a jour du journal d'accès avec groupement par date
         function updateAccessLog() {
-            const logHtml = accessLog.slice(-50).reverse().map(log => {
+            const logContainer = document.getElementById('accessLog');
+            const lastLogs = accessLog.slice(-200).reverse();
+
+            // Calculer les stats
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const todayLogs = accessLog.filter(log => {
+                const logDate = new Date(log.timestamp);
+                logDate.setHours(0, 0, 0, 0);
+                return logDate.getTime() === today.getTime();
+            });
+            
+            const approvedCount = todayLogs.filter(log => log.result === 'approved').length;
+            const deniedCount = todayLogs.filter(log => log.result === 'denied').length;
+
+            // Mettre à jour les stats
+            document.getElementById('todayAccessCount').textContent = todayLogs.length;
+            document.getElementById('approvedCount').textContent = approvedCount;
+            document.getElementById('deniedCount').textContent = deniedCount;
+            document.getElementById('accessLogCount').textContent = `(${lastLogs.length} accès)`;
+
+            // Regrouper les logs par date
+            const groupedByDate = {};
+            lastLogs.forEach(log => {
                 const date = new Date(log.timestamp);
-                const icon = log.result === 'approved' ? '✓' : '✗';
-                const statusClass = log.result === 'approved' ? '' : 'denied';
+                const dateKey = date.toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
                 
+                if (!groupedByDate[dateKey]) {
+                    groupedByDate[dateKey] = [];
+                }
+                groupedByDate[dateKey].push(log);
+            });
+
+            // Générer le HTML avec groupement par date
+            const logHtml = Object.entries(groupedByDate).map(([dateKey, logs]) => {
+                const logsHtml = logs.map(log => {
+                    const date = new Date(log.timestamp);
+                    const statusClass = log.result === 'approved' ? 'approved' : 'denied';
+                    const statusText = log.result === 'approved' ? 'Autorisé' : 'Refusé';
+                    const timeStr = date.toLocaleString('fr-FR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    
+                    const photoUrl = getVisitorPhoto(log.visitorName);
+                    const photoHtml = photoUrl ? 
+                        `<div class="log-item-photo"><img src="${photoUrl}" alt="${log.visitorName}" onerror="this.style.display='none'"></div>` : 
+                        `<div class="log-item-photo" style="font-size: 24px;">👤</div>`;
+                    
+                    return `
+                        <div class="log-item ${statusClass}">
+                            ${photoHtml}
+                            <div class="log-item-content">
+                                <div class="log-timestamp">🕐 ${timeStr}</div>
+                                <div class="log-details">
+                                    <strong>${log.visitorName}</strong> • ${log.location}
+                                </div>
+                            </div>
+                            <div class="log-status-badge ${statusClass}">
+                                <span class="log-status-dot"></span>
+                                ${statusText}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
                 return `
-                    <div class="log-item ${statusClass}">
-                        <div class="log-timestamp">${icon} ${date.toLocaleString('fr-FR')}</div>
-                        <div class="log-details">
-                            <strong>${log.visitorName}</strong> - ${log.location}
-                            ${log.result === 'approved' ? '(Accès Autorisé)' : '(Accès Refusé)'}
+                    <div class="log-date-group">
+                        <div class="log-date-header">
+                            <span class="log-date-title">📅 ${dateKey}</span>
+                            <span class="log-date-count">${logs.length} accès</span>
+                        </div>
+                        <div class="log-items-container">
+                            ${logsHtml}
                         </div>
                     </div>
                 `;
             }).join('');
 
-            document.getElementById('accessLog').innerHTML = logHtml || '<p style="text-align: center; color: var(--dark); opacity: 0.5;">Aucun accès enregistré</p>';
+            logContainer.innerHTML = logHtml || '<div style="text-align: center; color: var(--dark); opacity: 0.5; padding: 40px; font-size: 16px;">📭 Aucun accès enregistré</div>';
         }
 
         // --- Historique de recherche (Ceuc dont leurs code qr on ete enreg.) ---
@@ -4934,29 +5915,44 @@ Sexe: ${visitor.sexe || 'N/A'}
         function renderHistorySearchResults(results) {
             const container = document.getElementById('historyResults');
             if (!container) return;
+            
             if (!results || results.length === 0) {
-                container.innerHTML = '<p style="text-align: left; color: var(--dark); opacity: 0.6;">Aucun résultat</p>';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--dark); opacity: 0.5;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🔍</div>
+                        <p>Aucun résultat trouvé</p>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = results.map(v => {
-                const photoHtml = v.photo ? `<div class="visitor-photo"><img src="${v.photo}" alt="${v.name}"></div>` : `<div class="visitor-photo">👤</div>`;
-                const endTimeStr = v.endTime ? (new Date(v.endTime)).toLocaleString('fr-FR') : '';
+            container.innerHTML = results.map((v, index) => {
+                const photoHtml = v.photo ? `<div class="visitor-photo"><img src="${v.photo}" alt="${v.name}" style="width: 100%; height: 100%; object-fit: cover;"></div>` : `<div class="visitor-photo" style="font-size: 28px;">👤</div>`;
+                const endTimeStr = v.endTime ? (new Date(v.endTime)).toLocaleString('fr-FR', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : 'N/A';
+                
+                const isExpired = v.endTime && new Date(v.endTime) < new Date() ? 'expired' : '';
+                
                 return `
-                    <div class="visitor-item" style="cursor:pointer;" onclick="showVisitorDetails('${v.id}')">
+                    <div class="visitor-item ${isExpired}" style="cursor:pointer; animation-delay: ${index * 0.05}s;" onclick="showVisitorDetails('${v.id}')">
                         ${photoHtml}
                         <div class="visitor-info">
                             <div class="visitor-name">${v.name}</div>
                             <div class="visitor-meta">
-                                <span>🔢 ${v.quickCode || v.id}</span>
+                                <span>🔢 ${v.quickCode || v.id.substring(0, 8)}</span>
                                 <span>📍 ${v.location || 'N/A'}</span>
                                 <span>📱 ${v.phone || 'N/A'}</span>
                                 <span>⏱️ ${endTimeStr}</span>
                             </div>
                         </div>
-                        <div class="visitor-status active">
+                        <div class="visitor-status ${isExpired ? 'expired' : 'active'}">
                             <div class="status-dot"></div>
-                            Détails
+                            ${isExpired ? 'Expiré' : 'Actif'}
                         </div>
                     </div>
                 `;
@@ -4964,31 +5960,131 @@ Sexe: ${visitor.sexe || 'N/A'}
         }
 
         function performHistorySearch() {
-            const q = document.getElementById('historySearch').value.trim().toLowerCase();
-            if (!q) {
+            const searchName = document.getElementById('historySearch').value.trim().toLowerCase();
+            const selectedDate = document.getElementById('historyDateFilter').value;
+            
+            // Si aucun critère n'est fourni, vider les résultats
+            if (!searchName && !selectedDate) {
                 document.getElementById('historyResults').innerHTML = '';
                 return;
             }
-
-            const results = visitors.filter(v => {
-                return (v.name && v.name.toLowerCase().includes(q)) ||
-                       (v.quickCode && v.quickCode.toLowerCase().includes(q)) ||
-                       (v.id && v.id.toLowerCase().includes(q)) ||
-                       (v.phone && v.phone.toLowerCase().includes(q)) ||
-                       (v.email && v.email.toLowerCase().includes(q));
+            
+            // Filtrer les logs d'accès par date et nom
+            const filteredLogs = accessLog.filter(log => {
+                let matches = true;
+                
+                // Filtrer par date si spécifiée
+                if (selectedDate) {
+                    const logDate = new Date(log.timestamp);
+                    const logDateStr = logDate.toISOString().split('T')[0];
+                    matches = matches && logDateStr === selectedDate;
+                }
+                
+                // Filtrer par nom si spécifié
+                if (searchName) {
+                    matches = matches && log.visitorName.toLowerCase().includes(searchName);
+                }
+                
+                return matches;
             });
-
-            renderHistorySearchResults(results);
+            
+            renderHistoryFilteredResults(filteredLogs);
         }
 
-        const historySearchDebounced = debounce(performHistorySearch, 200);
+        // Fonction pour afficher les résultats filtrés du journal d'accès
+        function renderHistoryFilteredResults(logs) {
+            const container = document.getElementById('historyResults');
+            if (!container) return;
+            
+            if (!logs || logs.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--dark); opacity: 0.5;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">🔍</div>
+                        <p>Aucun accès trouvé pour ces critères</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Regrouper par date
+            const groupedByDate = {};
+            logs.forEach(log => {
+                const date = new Date(log.timestamp);
+                const dateKey = date.toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+                
+                if (!groupedByDate[dateKey]) {
+                    groupedByDate[dateKey] = [];
+                }
+                groupedByDate[dateKey].push(log);
+            });
+            
+            // Générer le HTML avec groupement
+            const logHtml = Object.entries(groupedByDate).map(([dateKey, dateLogs]) => {
+                const logsHtml = dateLogs.map(log => {
+                    const date = new Date(log.timestamp);
+                    const statusClass = log.result === 'approved' ? 'approved' : 'denied';
+                    const statusText = log.result === 'approved' ? 'Autorisé' : 'Refusé';
+                    const timeStr = date.toLocaleString('fr-FR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                    
+                    const photoUrl = getVisitorPhoto(log.visitorName);
+                    const photoHtml = photoUrl ? 
+                        `<div class="log-item-photo"><img src="${photoUrl}" alt="${log.visitorName}" onerror="this.style.display='none'"></div>` : 
+                        `<div class="log-item-photo" style="font-size: 24px;">👤</div>`;
+                    
+                    return `
+                        <div class="log-item ${statusClass}">
+                            ${photoHtml}
+                            <div class="log-item-content">
+                                <div class="log-timestamp">🕐 ${timeStr}</div>
+                                <div class="log-details">
+                                    <strong>${log.visitorName}</strong> • ${log.location}
+                                </div>
+                            </div>
+                            <div class="log-status-badge ${statusClass}">
+                                <span class="log-status-dot"></span>
+                                ${statusText}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div class="log-date-group">
+                        <div class="log-date-header">
+                            <span class="log-date-title">📅 ${dateKey}</span>
+                            <span class="log-date-count">${dateLogs.length} accès</span>
+                        </div>
+                        <div class="log-items-container">
+                            ${logsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `<div style="margin-top: 20px;">${logHtml}</div>`;
+        }
+
+        const historySearchDebounced = debounce(performHistorySearch, 300);
 
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('historySearch');
+            const dateInput = document.getElementById('historyDateFilter');
             const clearBtn = document.getElementById('historyClearBtn');
+            
             if (searchInput) searchInput.addEventListener('input', historySearchDebounced);
+            if (dateInput) dateInput.addEventListener('change', historySearchDebounced);
+            
             if (clearBtn) clearBtn.addEventListener('click', function() {
                 if (searchInput) searchInput.value = '';
+                if (dateInput) dateInput.value = '';
                 document.getElementById('historyResults').innerHTML = '';
                 searchInput && searchInput.focus();
             });
@@ -5476,7 +6572,7 @@ Sexe: ${visitor.sexe || 'N/A'}
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('themeMode');
+            const savedTheme = localStorage.getItem('themeMode') || 'dark';
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
             }
